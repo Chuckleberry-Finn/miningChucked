@@ -1,7 +1,8 @@
-id=ChuckTemplate
-name=ChuckTemplate
-description= 
+id=MiningChucked
+name=Mining Chucked
+description= Extension to TheHunterJP's Mining Mod. Adds mining zones. Commissioned by Atomic Duck.
 poster=poster.png
+require=miningMod
 tags=Build 41
 versionMin=41
 

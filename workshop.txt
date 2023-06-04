@@ -1,7 +1,7 @@
 version=1
-title=Chuck-Template
-description=[h2]Brief 1 sentence description.[/h2]
-description=[h3]Commissioned by [b]client name[/b][/h3]
+title=Mining Chucked
+description=[h2]Extension to TheHunterJP's Mining Mod. Adds mining zones.[/h2]
+description=[h3]Commissioned by [b]MrAtomicDuck[/b][/h3]
 description=
 description=
 description=[url=https://ko-fi.com/chuckleberryfinn][img]https://raw.githubusercontent.com/ChuckTheSheep/chuckImages/main/kofi.png[/img][/url] [url=https://www.patreon.com/bePatron?u=17239488][img]https://raw.githubusercontent.com/ChuckTheSheep/chuckImages/main/patreon.png[/img][/url]
