@@ -2,7 +2,7 @@ id=MiningChucked
 name=Mining Chucked
 description=Extension to TheHunterJP's Mining Mod. Adds mining zones. Commissioned by Atomic Duck.
 poster=poster.png
-require=miningMod
+require=miningMod;ProjectMMOboid
 tags=Build 41
 versionMin=41.0
 
