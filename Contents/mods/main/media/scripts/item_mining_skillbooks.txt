@@ -1,0 +1,78 @@
+module Base {
+
+	item BookMining1
+    {
+        DisplayCategory = SkillBook,
+        NumberOfPages	=	220,
+        Weight	=	0.8,
+        Type	=	Literature,
+        DisplayName = Mining Vol. 1,
+        Icon	=	Book7,
+        SkillTrained = Mining,
+        LvlSkillTrained = 1,
+        NumLevelsTrained = 2,
+        StaticModel = Book,
+        WorldStaticModel = BookGrey_Ground,
+    }
+
+    item BookMining2
+    {
+        DisplayCategory = SkillBook,
+        NumberOfPages	=	260,
+        Weight	=	0.8,
+        Type	=	Literature,
+        DisplayName = Mining Vol. 2,
+        Icon	=	Book7,
+        SkillTrained = Mining,
+        LvlSkillTrained = 3,
+        NumLevelsTrained = 2,
+        StaticModel = Book,
+        WorldStaticModel = BookGrey_Ground,
+    }
+
+     item BookMining3
+    {
+        DisplayCategory = SkillBook,
+        NumberOfPages	=	300,
+        Weight	=	0.8,
+        Type	=	Literature,
+        DisplayName = Mining Vol. 3,
+        Icon	=	Book7,
+        SkillTrained = Mining,
+        LvlSkillTrained = 5,
+        NumLevelsTrained = 2,
+        StaticModel = Book,
+        WorldStaticModel = BookGrey_Ground,
+    }
+
+     item BookMining4
+    {
+        DisplayCategory = SkillBook,
+        NumberOfPages	=	340,
+        Weight	=	0.8,
+        Type	=	Literature,
+        DisplayName = Mining Vol. 4,
+        Icon	=	Book7,
+        SkillTrained = Mining,
+        LvlSkillTrained = 7,
+        NumLevelsTrained = 2,
+        StaticModel = Book,
+        WorldStaticModel = BookGrey_Ground,
+    }
+
+     item BookMining5
+    {
+        DisplayCategory = SkillBook,
+        NumberOfPages	=	380,
+        Weight	=	0.8,
+        Type	=	Literature,
+        DisplayName = Mining Vol. 5,
+        Icon	=	Book7,
+        SkillTrained = Mining,
+        LvlSkillTrained = 9,
+        NumLevelsTrained = 2,
+        StaticModel = Book,
+        WorldStaticModel = BookGrey_Ground,
+     }
+
+}
