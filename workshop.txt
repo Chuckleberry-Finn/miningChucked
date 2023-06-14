@@ -1,7 +1,8 @@
 version=1
 id=2987857283
 title=Mining Chucked
-description=[h2]Extension to TheHunterJP's Mining Mod. Adds mining zones.[/h2]
+description=[h2]Adds a mining skill.[/h2]
+description=[h3]Original code written by [b]TheHunterJP[/b].[/h3]
 description=[h3]Commissioned by [b]MrAtomicDuck[/b].[/h3]
 description=
 description=
