@@ -1,3 +1,6 @@
 Tooltip_EN = {
     Tooltip_BookTitle_Mining = "Mining",
+
+    Tooltip_Require_Pickaxe = "I need a pickaxe",
+    Tooltip_Require_Endurance = "I need more energy",
 }

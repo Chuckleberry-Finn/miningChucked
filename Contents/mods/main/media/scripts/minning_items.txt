@@ -1,0 +1,185 @@
+module Mining
+{
+	imports
+	{
+		Base
+	}
+
+
+    item MM_Coal
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	1,
+		Type	=	Normal,
+		DisplayName	=	Coal,
+		Icon	=	Coal,
+		WorldStaticModel = Stone,
+	}
+
+	item MM_RawIron
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	0.5,
+		Type	=	Normal,
+		DisplayName	=	Raw Iron,
+		Icon	=	Raw_Iron,
+		WorldStaticModel = Stone,
+	}
+
+	item MM_RawCopper
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	0.5,
+		Type	=	Normal,
+		DisplayName	=	Raw Copper,
+		Icon	=	Raw_Copper,
+		WorldStaticModel = Stone,
+	}
+
+	item MM_RawNickel
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	1,
+		Type	=	Normal,
+		DisplayName	=	Raw Nickel,
+		Icon	=	Raw_Nickel,
+		WorldStaticModel = Stone,
+	}
+
+	item MM_RawLead
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	1,
+		Type	=	Normal,
+		DisplayName	=	Raw Lead,
+		Icon	=	Raw_Lead,
+		WorldStaticModel = Stone,
+	}
+
+	
+	item MM_RawChromium
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	1,
+		Type	=	Normal,
+		DisplayName	=	Raw Chromium,
+		Icon	=	Raw_Chromium,
+		WorldStaticModel = Stone,
+	}
+
+	
+	item MM_RawTin
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	1,
+		Type	=	Normal,
+		DisplayName	= Raw Tin,
+		Icon	=	Raw_Tin,
+		WorldStaticModel = Stone,
+	}
+
+	
+	item MM_RawSalt
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	1,
+		Type	=	Normal,
+		DisplayName	= Raw Salt,
+		Icon	=	Raw_Salt,
+		WorldStaticModel = Stone,
+	}
+
+	item MM_RawSulfure
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	1,
+		Type	=	Normal,
+		DisplayName	= Raw Sulfure,
+		Icon	=	Raw_Sulfure,
+		WorldStaticModel = Stone,
+	}
+
+	item MM_Limestone
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	1,
+		Type	=	Normal,
+		DisplayName	=	Limestone,
+		Icon	=	Limestone,
+		WorldStaticModel = Stone,
+	}
+
+    item MM_IronIngot
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	0.5,
+		Type	=	Normal,
+		DisplayName	=	Iron Ingot,
+		Icon	=	Iron_Ingot,
+	}
+
+	item MM_CopperIngot
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	0.5,
+		Type	=	Normal,
+		DisplayName	=	Copper Ingot,
+		Icon	=	Copper_Ingot,
+	}
+
+	item MM_NickelIngot
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	1,
+		Type	=	Normal,
+		DisplayName	=	Nickel Ingot,
+		Icon	=	Nickel_Ingot,
+	}
+
+	item MM_LeadIngot
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	1,
+		Type	=	Normal,
+		DisplayName	=	Lead Ingot,
+		Icon	=	Lead_Ingot,
+	}
+
+	
+	item MM_ChromiumIngot
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	1,
+		Type	=	Normal,
+		DisplayName	=	Chromium Ingot,
+		Icon	=	Chromium_Ingot,
+	}
+
+	
+	item MM_TinIngot
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	1,
+		Type	=	Normal,
+		DisplayName	= Tin Ingot,
+		Icon	=	Tin_Ingot,
+	}
+	
+	item MM_Salt
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	1,
+		Type	=	Normal,
+		DisplayName	= Salt,
+		Icon	=	Salt,
+	}
+
+	item MM_Sulfure
+	{
+	    DisplayCategory = Ingots,
+		Weight	=	1,
+		Type	=	Normal,
+		DisplayName	= Sulfure,
+		Icon	=	Sulfure,
+	}
+}

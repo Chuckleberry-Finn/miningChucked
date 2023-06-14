@@ -16,3 +16,38 @@ perk Mining
 	xp9 = 5000,
 	xp10 = 6000,
 }
+
+
+perk Endurance
+{
+	parent = None,
+	translation = Endurance,
+	passive = false,
+	xp1= 0,
+	xp2 = 0,
+	xp3 = 0,
+	xp4 = 0,
+	xp5 = 0,
+	xp6 = 0,
+	xp7 = 0,
+	xp8 = 0,
+	xp9 = 0,
+	xp10 = 0,
+}
+
+perk MineEndurance
+{
+	parent = Endurance,
+	translation = MineEndurance,
+	passive = true,
+	xp1= 10,
+	xp2 = 10,
+	xp3 = 10,
+	xp4 = 10,
+	xp5 = 10,
+	xp6 = 10,
+	xp7 = 10,
+	xp8 = 10,
+	xp9 = 10,
+	xp10 = 10,
+}

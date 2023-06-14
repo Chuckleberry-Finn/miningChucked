@@ -1,0 +1,12 @@
+module Base
+{
+    sound Mining_Pickaxe
+	{
+		category = Player,
+        clip
+        {
+            file = media/sound/Mining_Pickaxe.wav,
+            distanceMax = 20,
+        }
+	}
+}
