@@ -1,10 +1,6 @@
-if not getMiningModInstance then
-    require('MiningMod')
-end
+local miningMod = require('miningMod')
 
-MiningMod = getMiningModInstance()
-
-MiningMod.resources["Tin Mine"] = {
+miningMod.resources["Tin Mine"] = {
     mineType = "Tin Mine",
     menuName = getText("ContextMenu_Tin_Mine"),
     menuAction = getText("ContextMenu_Mine_Tin"),

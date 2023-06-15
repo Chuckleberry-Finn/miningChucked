@@ -1,35 +1,45 @@
-ISMineOre = ISBaseTimedAction:derive("ISMineIron");
+local miningMod = require('miningMod')
+
+
+ISMineOre = ISBaseTimedAction:derive("ISMineIron")
+
 
 local function predicateNotBroken(item)
     return not item:isBroken()
 end
 
+
 function ISMineOre:isValid()
-    return true;
+    return true
 end
+
 
 function ISMineOre:waitToStart()
     self.character:faceThisObjectAlt(self.item)
     return self.character:shouldBeTurning()
 end
 
+
 function ISMineOre:start()
     self:setActionAnim("Mining")
     self.character:faceThisObject(self.thumpable)
-    self.sound = self.character:playSound("Mining_Pickaxe");
+    self.sound = self.character:playSound("Mining_Pickaxe")
 end
+
 
 function ISMineOre:update()
     self.character:faceThisObjectAlt(self.item)
 end
+
 
 function ISMineOre:stop()
     if self.sound then
         self.character:getEmitter():stopSound(self.sound)
         self.sound = nil
     end
-    ISBaseTimedAction.stop(self);
+    ISBaseTimedAction.stop(self)
 end
+
 
 function ISMineOre:perform()
     if self.sound then
@@ -37,17 +47,13 @@ function ISMineOre:perform()
         self.sound = nil
     end
 
-    ISBaseTimedAction.perform(self);
+    ISBaseTimedAction.perform(self)
 
-    self.character:LoseLevel(Perks.MineEndurance);
-    self.character:LoseLevel(Perks.MineEndurance);
-    self.character:getXp():AddXP(Perks.MineEndurance, -120);
-    self.character:getXp():AddXP(Perks.MetalWelding, 5);
-    self.character:getStats():setEndurance(self.character:getStats():getEndurance() - 0.15);
+    self.character:getStats():setEndurance(self.character:getStats():getEndurance() - 0.15)
 
-    local oreType = self.oreData.mineType;
+    local oreType = self.oreData.mineType
 
-    for _, v in pairs(getMiningModInstance().resources[oreType].lootTables) do
+    for _, v in pairs(miningMod.resources[oreType].lootTables) do
         self:processLoot(v)
     end
 end
@@ -56,14 +62,16 @@ function ISMineOre:new(character, item, time)
     local o = {}
     setmetatable(o, self)
     self.__index = self
-    o.character = character;
-    o.item = item;
-    o.stopOnWalk = true;
-    o.stopOnRun = true;
-    o.maxTime = time;
-
-    return o;
+    o.character = character
+    o.item = item
+    o.stopOnWalk = true
+    o.stopOnRun = true
+    o.maxTime = time - (character:getPerkLevel(Perks.Strength) * 10)
+    if character:isTimedActionInstant() then o.maxTime = 1 end
+    o.caloriesModifier = 8
+    return o
 end
+
 
 function ISMineOre:processLoot(loot)
     if loot.fixed then
@@ -71,12 +79,12 @@ function ISMineOre:processLoot(loot)
         return
     end
 
-    local metalistLevel = self.character:getPerkLevel(Perks.MetalWelding)
+    local miningLevel = self.character:getPerkLevel(Perks.Mining)
 
     if loot.requireLevel then
         for _, v in pairs(loot.amountPerLevel) do
             for _, level in pairs(v.levels) do
-                if metalistLevel == level then
+                if miningLevel == level then
                     local extra = ZombRand(v.amounts.max - v.amounts.min + 1)
                     local finalAmount = v.amounts.min + extra
                     self:addItems(loot.item, finalAmount)
@@ -87,13 +95,8 @@ function ISMineOre:processLoot(loot)
     end
 end
 
+
 function ISMineOre:addItems(item, amount)
-    local additional = 0;
-    if self.character:HasTrait('GoodMiner') then additional = 1 end
-    if self.character:HasTrait('BadMiner') then additional = -1 end
-
-    local finalAmount = amount + additional
-    if finalAmount <= 0 then return end
-
-    self.character:getInventory():AddItems(item, finalAmount);
+    if amount <= 0 then return end
+    self.character:getInventory():AddItems(item, amount)
 end
