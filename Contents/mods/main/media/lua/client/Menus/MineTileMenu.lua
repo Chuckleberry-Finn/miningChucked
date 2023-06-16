@@ -2,7 +2,7 @@ local miningMod = require('miningMod')
 
 local placeNodesContextMenu = {}
 
-placeNodesContextMenu.OnFillWorldObjectContextMenu = function(player, context, worldobjects, test)
+placeNodesContextMenu.OnFillWorldObjectContextMenu = function(player, context, worldObjects, test)
     if not isDebugEnabled() and not isAdmin() then return end
     if getCore():getGameMode() == 'LastStand' then return end
     if test and ISWorldObjectContextMenu.Test then return true end
@@ -16,7 +16,7 @@ placeNodesContextMenu.OnFillWorldObjectContextMenu = function(player, context, w
 
     local mines = miningMod.resources
     for i, mine in pairs(mines) do
-        local menuOption = subMenu:addOption(mine.menuName, worldobjects, placeNodesContextMenu.onBuildIndesctructibleBuild, player,
+        local menuOption = subMenu:addOption(mine.menuName, worldObjects, placeNodesContextMenu.onBuildIndesctructibleBuild, player,
             mine.mineType, mine.textures[1], mine.textures[2])
         placeNodesContextMenu.AddTooltip(menuOption, player, mine.menuName, mine.textures[2])
     end
