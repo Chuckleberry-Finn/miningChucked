@@ -1,6 +1,6 @@
 local miningMod = require('miningMod')
 
-miningMod.resources["Stone Mine"] = {
+miningMod.resources["Stone"] = {
     mineType = "Stone Mine",
     menuName = getText("ContextMenu_Stone_Mine"),
     menuAction = getText("ContextMenu_Mine_Stone"),
