@@ -9,13 +9,11 @@ miningMod.resources["Nickel Mine"] = {
         {
             item = "Base.Stone",
             requireLevel = false,
-            fixed = true,
             fixedAmount = 1,
         },
         {
             item = "Mining.MM_RawNickel",
             requireLevel = true,
-            fixed = false,
             amountPerLevel = {
                 { levels = { 0, 1 }, amounts = { min = 0, max = 1 } },
                 { levels = { 2, 3 }, amounts = { min = 1, max = 3 } },

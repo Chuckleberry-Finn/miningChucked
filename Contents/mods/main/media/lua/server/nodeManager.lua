@@ -9,7 +9,7 @@ nodeManager.nodeZone = {
     x1=-1, y1=-1, x2=-1, y2=-1,
     maxNodes=0, respawnTimer=0,
     minerals = {},
-    currentNodes = { {x=0, y=0,}, },--mineral="", hits=0},
+    currentNodes = {}-- {x=0, y=0,}, mineral="", hits=0},
 }
 
 

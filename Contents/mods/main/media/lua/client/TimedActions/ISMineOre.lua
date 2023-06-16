@@ -74,7 +74,7 @@ end
 
 
 function ISMineOre:processLoot(loot)
-    if loot.fixed then
+    if loot.fixedAmount and loot.fixedAmount>0 then
         self:addItems(loot.item, loot.fixedAmount)
         return
     end
