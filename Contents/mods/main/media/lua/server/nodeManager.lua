@@ -43,8 +43,37 @@ function nodeManager.createWeightedMineralsList(nodeZone)
 end
 
 
+function nodeManager.scanValidNodes(nodeZone)
+    for i,nodeCoords in pairs(nodeZone.currentNodes) do
+
+        local cell = getWorld():getCell()
+        if not cell then return print("NO CELL") end
+
+        ---@type IsoGridSquare
+        local sq = cell:getGridSquare(nodeCoords[1], nodeCoords[2], 0)
+        if not sq then return print("NO SQUARE") end
+
+        local objects = sq:getSpecialObjects()
+
+        local nodeFound = false
+
+        for i=0, objects:size()-1 do
+            ---@type IsoThumpable|IsoObject
+            local node = objects:get(i)
+            if instanceof(node, "IsoThumpable") then
+                print("NODE?: ",node:getObjectName(), node:getSpriteName(), node:getTextureName())
+            end
+        end
+
+        if not nodeFound then nodeZone.currentNodes[i] = nil end
+    end
+end
+
+
 function nodeManager.spawnNode(nodeZone)
     --spawnNode
+
+    nodeManager.scanValidNodes(nodeZone)
 
     print("SPAWN NODE:")
 
