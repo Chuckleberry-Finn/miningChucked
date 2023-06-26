@@ -2,27 +2,10 @@ local miningMod = {}
 
 miningMod.resources = {}
 
-function miningMod.spawnNode(nodeX, nodeY, mineral)
-    print("SPAWNING NODE ACTUAL")
-    if isServer() then
-        sendServerCommand("miningChucked", "spawnNode", {mineral=mineral, nodeX=nodeX, nodeY=nodeY})
-    else
-        local mineData = miningMod.resources[mineral]
-
-        local cell = getWorld():getCell()
-        if not cell then return print("NO CELL") end
-
-        local sq = cell:getGridSquare(nodeX, nodeY, 0)
-        if not sq then return print("NO SQUARE") end
-
-        local node = IsoThumpable.new(cell, sq, mineData.textures[ZombRand(2)+1], false, nil)
-        node:setIsThumpable(false)
-        sq:AddSpecialObject(node)
-        node:transmitCompleteItemToServer()
-
-        print("node:"..tostring(node))
-        --getCell():setDrag(node, getPlayer():getPlayerNum())
-    end
+function miningMod.copyAgainst(tableA,tableB)
+    if not tableA or not tableB then return end
+    for key,value in pairs(tableB) do tableA[key] = value end
+    for key,_ in pairs(tableA) do if not tableB[key] then tableA[key] = nil end end
 end
 
 return miningMod

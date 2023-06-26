@@ -24,11 +24,11 @@ end
 
 
 function nodeManager.init(isNewGame)
-    print("nodeManager:init")
     nodeManager.zones = ModData.getOrCreate("miningChucked_zones")
 
-    nodeManager.zones = {}
-    nodeManager.addZone(12040, 7375, 12050, 7390, { ["Coal"]=3, ["Iron"]=1 }, 10)
+    --test
+    ---nodeManager.zones = {}
+    ---nodeManager.addZone(12040, 7375, 12050, 7390, { ["Coal"]=3, ["Iron"]=1 }, 10)
 end
 
 
@@ -47,21 +47,19 @@ function nodeManager.scanValidNodes(nodeZone)
     for i,nodeCoords in pairs(nodeZone.currentNodes) do
 
         local cell = getWorld():getCell()
-        if not cell then return print("NO CELL") end
+        if not cell then return end
 
         ---@type IsoGridSquare
         local sq = cell:getGridSquare(nodeCoords[1], nodeCoords[2], 0)
-        if not sq then return print("NO SQUARE") end
+        if not sq then return end
 
         local objects = sq:getSpecialObjects()
-
         local nodeFound = false
-
         for i=0, objects:size()-1 do
             ---@type IsoThumpable|IsoObject
             local node = objects:get(i)
-            if instanceof(node, "IsoThumpable") then
-                print("NODE?: ",node:getObjectName(), node:getSpriteName(), node:getTextureName())
+            if instanceof(node, "IsoThumpable") and node:getTextureName() and (string.find(node:getTextureName(), "mines_")) then
+                nodeFound = true
             end
         end
 
@@ -73,10 +71,6 @@ end
 function nodeManager.spawnNode(nodeZone)
     --spawnNode
 
-    nodeManager.scanValidNodes(nodeZone)
-
-    print("SPAWN NODE:")
-
     local x1, y1, x2, y2 = nodeZone.x1, nodeZone.y1, nodeZone.x2, nodeZone.y2
 
     local nodeX = ZombRand(x1,x2+1)
@@ -87,14 +81,29 @@ function nodeManager.spawnNode(nodeZone)
 
     local mineralSelection = ZombRand(#nodeZone.weightedMineralsList)+1
     local mineral = nodeZone.weightedMineralsList[mineralSelection]
-    print("mineral check: "..tostring(mineral).."   : "..mineralSelection.."/"..#nodeZone.weightedMineralsList)
-    miningMod.spawnNode(nodeX, nodeY, mineral)
+    local mineData = miningMod.resources[mineral]
+
+    local cell = getWorld():getCell()
+    if not cell then return end
+
+    local sq = cell:getGridSquare(nodeX, nodeY, 0)
+    if not sq then return end
+
+    local node = IsoThumpable.new(cell, sq, mineData.textures[ZombRand(2)+1], false, nil)
+    node:setIsThumpable(false)
+    sq:AddSpecialObject(node)
+    node:transmitCompleteItemToServer()
+
+    if getDebug() then print("spawnNode:"..tostring(node)) end
+    --getCell():setDrag(node, getPlayer():getPlayerNum())
+
     table.insert(nodeZone.currentNodes, {nodeX, nodeY} )
 end
 
 
 function nodeManager.cycle()
     for i,zone in pairs(nodeManager.zones) do
+        nodeManager.scanValidNodes(zone)
         if #zone.currentNodes < zone.maxNodes then
             nodeManager.spawnNode(zone)
         end
