@@ -8,27 +8,42 @@ nodeManager.zones = {}
 ---nodeZone template
 -- minerals = {}:  `["mineralID"]=chance` to appear
 nodeManager.nodeZone = {
-    x1=-1, y1=-1, x2=-1, y2=-1,
-    maxNodes=0, respawnTimer=0,
+    maxNodes=0,
+    respawnTimer=0,
+    coordinates={x1=-1, y1=-1, x2=-1, y2=-1},
     minerals = {},
     currentNodes = {},-- {{x=0, y=0,}},
     weightedMineralsList = {},
 }
 
 
+local function onClientCommand(_module, _command, _player, _data)
+    if _module ~= "nodeManager" then return end
+    _data = _data or {}
+    if _command == "addZone" then
+        nodeManager.addZone(_data.x1, _data.y1, _data.x2, _data.y2, _data.minerals, _data.maxNodes)
+    end
+end
+Events.OnClientCommand.Add(onClientCommand)--/client/ to server
+
+
 function nodeManager.addZone(x1, y1, x2, y2, minerals, maxNodes)
     local newZone = copyTable(nodeManager.nodeZone)
-    newZone.x1, newZone.y1, newZone.x2, newZone.y2, newZone.minerals, newZone.maxNodes = x1, y1, x2, y2, minerals, maxNodes
+    newZone.coordinates.x1, newZone.coordinates.y1, newZone.coordinates.x2, newZone.coordinates.y2, newZone.minerals, newZone.maxNodes = x1, y1, x2, y2, minerals, maxNodes
     table.insert(nodeManager.zones, newZone)
+    ModData.transmit("miningChucked_zones")
 end
 
 
 function nodeManager.init(isNewGame)
     nodeManager.zones = ModData.getOrCreate("miningChucked_zones")
 
-    --test
-    ---nodeManager.zones = {}
-    ---nodeManager.addZone(12040, 7375, 12050, 7390, { ["Coal"]=3, ["Iron"]=1 }, 10)
+    ---test
+    if #nodeManager.zones < 3 then
+        nodeManager.addZone(12040, 7375, 12050, 7390, { ["Coal"]=3, ["Iron"]=1 }, 10)
+        nodeManager.addZone(1000, 1000, 2000, 2000, { ["Coal"]=3, ["Iron"]=1 }, 10)
+        nodeManager.addZone(5000, 5000, 6000, 6000, { ["Coal"]=3, ["Iron"]=1 }, 10)
+    end
 end
 
 
@@ -71,7 +86,7 @@ end
 function nodeManager.spawnNode(nodeZone)
     --spawnNode
 
-    local x1, y1, x2, y2 = nodeZone.x1, nodeZone.y1, nodeZone.x2, nodeZone.y2
+    local x1, y1, x2, y2 = nodeZone.coordinates.x1, nodeZone.coordinates.y1, nodeZone.coordinates.x2, nodeZone.coordinates.y2
 
     local nodeX = ZombRand(x1,x2+1)
     local nodeY = ZombRand(y1,y2+1)
