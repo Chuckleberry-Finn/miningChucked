@@ -28,6 +28,9 @@ function zoneEditor:initialise()
     self.firstTableData = false
 end
 
+function zoneEditor:supplantMouseWheel(del)
+    self.parent:onMouseWheel(del)
+end
 
 function zoneEditor:createChildren()
     ISPanel.createChildren(self)
@@ -59,9 +62,19 @@ function zoneEditor:createChildren()
     self.zoneEditPanel.doDrawItem = self.drawZoneEditPanel
     self.zoneEditPanel.drawBorder = false
     self.zoneEditPanel.onmousedown = zoneEditor.OnZoneEditPanelMouseDown
+    self.zoneEditPanel.onMouseWheel = zoneEditor.supplantMouseWheel
     self.zoneEditPanel.target = self
     self:addChild(self.zoneEditPanel)
     self.zoneEditPanel:setVisible(false)
+
+    self.editValueEntry = ISTextEntryBox:new("", self.zoneEditPanel.x, 0, self.zoneEditPanel.width, self.zoneEditPanel.itemheight)
+    self.editValueEntry:initialise()
+    self.editValueEntry:instantiate()
+    self.editValueEntry.font = UIFont.NewSmall
+    self.editValueEntry.borderColor = { r = 0.5, g = 0.5, b = 0.5, a = 0.5 }
+    self.editValueEntry.onCommandEntered = self.onEnterValueEntry
+    self:addChild(self.editValueEntry)
+    self.editValueEntry:setVisible(false)
 
     local w = self.zoneList.width
     local buttonH, buttonW, buttonPad = 20, 100, 10
@@ -74,7 +87,7 @@ function zoneEditor:createChildren()
     y, button = ISDebugUtils.addButton(self,"addZone", buttonPad,self.height-buttonPad-buttonH, buttonW,buttonH, "Add Zone", zoneEditor.onClickAddZone)
     self.addZoneButton = button
 
-    y, button = ISDebugUtils.addButton(self,"addZone", self.zoneList.x+self.zoneList.width-20,0, 20,20, "X", zoneEditor.onClickRemoveZone)
+    y, button = ISDebugUtils.addButton(self,"X", self.zoneList.x+self.zoneList.width-23,3, 18,18, "X", zoneEditor.onClickRemoveZone)
     self.removeZoneButton = button
     self.removeZoneButton:setVisible(false)
 
@@ -102,16 +115,16 @@ end
 
 
 function zoneEditor:OnZoneListMouseDown(item)
-    --print("OnZoneListMouseDown: "..tostring(item))
+    print("A OnZoneListMouseDown: "..tostring(item))
 end
 
 function zoneEditor:OnZoneEditPanelMouseDown(item)
-    if zoneEditor.instance.zoneEditPanel.clickSelected == item then
-        zoneEditor.instance.zoneEditPanel.clickSelected = nil
-    else
-        zoneEditor.instance.zoneEditPanel.clickSelected = item
-    end
-    zoneEditor.instance:populateZoneEditPanel(zoneEditor.instance.zoneList.items[zoneEditor.instance.zoneList.selected].item)
+    print("B OnZoneEditPanelMouseDown: "..tostring(item))
+    zoneEditor.instance.zoneEditPanel.clickSelected = item
+    --zoneEditor.instance:populateZoneEditPanel()--zoneEditor.instance.zoneList.items[zoneEditor.instance.zoneList.selected].item)
+    local backup = zoneEditor.instance.zoneList.selected
+    zoneEditor.instance:populateZoneList()
+    zoneEditor.instance.zoneList.selected = backup
 end
 
 
@@ -138,22 +151,42 @@ zoneEditor.ignore = {["currentNodes"]=true,["weightedMineralsList"]=true}
 
 function zoneEditor:populateZoneEditPanel(zone)
     if self.zoneList.items[self.zoneList.selected].item == zone then
+
         local backup = self.zoneEditPanel.selected
         self.zoneEditPanel:clear()
+
+        self.zoneEditPanel.additionalSublistRows = 0
 
         for param, value in pairs(zone) do
             if not zoneEditor.ignore[param] then
 
-                local labelValue = (type(value) == "table") and "   []" or " = "..value
+                self.zoneEditPanel.openedSublist = self.zoneEditPanel.openedSublist or {}
 
-                if self.zoneEditPanel.clickSelected == param and labelValue == "   []" then labelValue = "   [  ]" end
+                local clickedCurrentParam = self.zoneEditPanel.clickSelected == param
+                local valueIsTable = type(value) == "table"
+
+                local labelValue = (not valueIsTable) and " = "..value or ""
+
+                if valueIsTable then
+                    if clickedCurrentParam then
+                        self.zoneEditPanel.clickSelected = nil
+                        if not self.zoneEditPanel.openedSublist[param] then self.zoneEditPanel.openedSublist[param] = true
+                        else self.zoneEditPanel.openedSublist[param] = nil end
+                    end
+
+                    if not self.zoneEditPanel.openedSublist[param] then labelValue = "   []"
+                    else labelValue = "   [  ]" end
+                end
+
                 self.zoneEditPanel:addItem(param..labelValue, param)
 
-                if self.zoneEditPanel.clickSelected == param and type(value) == "table" then
-                    self.zoneEditPanel.clickSelectedCount = 0
-                    for key,val in pairs(value) do
-                        self.zoneEditPanel.clickSelectedCount = self.zoneEditPanel.clickSelectedCount+1
-                        self.zoneEditPanel:addItem("     "..key.."="..val, key)
+                if self.zoneEditPanel.openedSublist[param] then
+                    if valueIsTable then
+                        for key,val in pairs(value) do
+                            self.zoneEditPanel.additionalSublistRows = self.zoneEditPanel.additionalSublistRows+1
+                            local subOption = self.zoneEditPanel:addItem("     "..key.."="..val, key)
+                            subOption.childOf = param
+                        end
                     end
                 end
             end
@@ -167,45 +200,119 @@ end
 function zoneEditor:drawZoneEditPanel(y, item, alt)
     local a = 0.9
     local itemHeight = self.itemheight
-    if self.selected == item.index then
 
+    --[[
+    if self.selected == item.index then
         local visualHeight = itemHeight
         if zoneEditor.instance.zoneEditPanel.clickSelected then
-            visualHeight = itemHeight + (self.itemheight*zoneEditor.instance.zoneEditPanel.clickSelectedCount)
+            visualHeight = itemHeight + (self.itemheight*zoneEditor.instance.zoneEditPanel.additionalSublistRows)
         end
         self:drawRect(0, (y), self:getWidth(), visualHeight - 1, 0.3, 1.4, 0.7, 0.3)
     end
+    --]]
+
+    if zoneEditor.instance.zoneEditPanel.clickSelected and zoneEditor.instance.zoneEditPanel.clickSelected == item.item then
+        zoneEditor.instance.editValueEntry:setY(y+zoneEditor.instance.zoneEditPanel.y)
+
+        zoneEditor.instance.editValueEntry:setVisible(false)
+        local zone = zoneEditor.instance.zoneList.items[zoneEditor.instance.zoneList.selected].item
+        local param = item.childOf and zone[item.childOf] and zone[item.childOf][item.item] or zone[item.item]
+        if param then
+            if not zoneEditor.instance.editValueEntry:isFocused() then
+                zoneEditor.instance.editValueEntry:focus()
+                zoneEditor.instance.editValueEntry:setText(tostring(param))
+            end
+            zoneEditor.instance.editValueEntry:setVisible(true)
+        end
+    end
+
     self:drawRectBorder(0, (y), self:getWidth(), itemHeight - 1, a, self.borderColor.r, self.borderColor.g, self.borderColor.b)
     self:drawText( item.text, 10, y + 2, 1, 1, 1, a, self.font)
     return y + itemHeight
 end
 
 
+function zoneEditor:onEnterValueEntry()
+
+    self:unfocus()
+
+    local zone = zoneEditor.instance.zoneList.items[zoneEditor.instance.zoneList.selected].item
+    local parentParam
+    local param = zone[zoneEditor.instance.zoneEditPanel.clickSelected]
+
+    if not param then
+        for zoneParam,value in pairs(zone) do
+            if type(value) == "table" then
+                print(" -----checking param: "..zoneParam)
+                local foundParam = zone[zoneParam][zoneEditor.instance.zoneEditPanel.clickSelected]
+                if foundParam then
+                    parentParam = zoneParam
+                    print(" ------foundParam: "..zoneParam)
+                    param = foundParam
+                end
+            end
+        end
+    end
+
+    local oldType = type(param)
+    print("oldType:"..oldType)
+
+    local newValue = self:getText()
+
+    if oldType == "number" then newValue = tonumber(newValue) end
+
+    if newValue and newValue~="" then
+        print(" ------newValue: "..tostring(newValue))
+        if parentParam then
+            zone[parentParam][zoneEditor.instance.zoneEditPanel.clickSelected] = newValue
+        else
+            zone[zoneEditor.instance.zoneEditPanel.clickSelected] = newValue
+        end
+        ModData.transmit("miningChucked_zones")
+    end
+
+    zoneEditor.instance.zoneEditPanel.clickSelected = nil
+    self:setVisible(false)
+    zoneEditor.instance:populateZoneEditPanel(zone)
+end
+
+
 function zoneEditor:drawZoneList(y, item, alt)
     local a = 0.9
-
     local itemHeight = self.itemheight
 
+    local zoneEditPanelH = 0
+
     if self.selected == item.index then
+        itemHeight = ((self.fontHgt + (self.itemPadY or 0) * 2))
 
-        itemHeight = ((self.fontHgt + (self.itemPadY or 0) * 2)*3)
+        --zoneEditPanelH = itemHeight-30
+        --if self.parent.zoneEditPanel.clickSelected then
+        zoneEditPanelH = self.parent.zoneEditPanel.itemheight*self.parent.zoneEditPanel.count
+        --end
 
-        local zoneEditPanelH = itemHeight-30
-        if self.parent.zoneEditPanel.clickSelected then
-            zoneEditPanelH = self.parent.zoneEditPanel.itemheight*self.parent.zoneEditPanel.count
+        itemHeight = itemHeight + (zoneEditPanelH)
+
+        self:drawRect(0, (y), self:getWidth(), (itemHeight-1), 0.3, 0.7, 0.35, 0.15)
+        self.parent.zoneEditPanel:setY(self.parent.zoneList:getYScroll()+(self.itemheight*2)+self.parent.zoneList.y+y-13)
+
+        if self.parent.zoneList:isVScrollBarVisible() then
+            local scrollWidth = self.parent.zoneList.vscroll.width
+            self.parent.removeZoneButton:setX(self.parent.zoneList.x+self.parent.zoneList.width-18-scrollWidth)
+            self.parent.zoneEditPanel:setWidth(self.parent.zoneList.width-5-scrollWidth)
+        else
+            self.parent.removeZoneButton:setX(self.parent.zoneList.x+self.parent.zoneList.width-23)
+            self.parent.zoneEditPanel:setWidth(self.parent.zoneList.width-10)
         end
 
-        self:drawRect(0, (y), self:getWidth(), itemHeight - 1, 0.3, 0.7, 0.35, 0.15)
-
-        self.parent.zoneEditPanel:setY(self.parent.zoneList.y+y+25)
         self.parent.zoneEditPanel:setHeight(zoneEditPanelH)
         self.parent.zoneEditPanel:setVisible(true)
 
-        self.parent.removeZoneButton:setY(self.parent.zoneList.y+y)
+        self.parent.removeZoneButton:setY(self.parent.zoneList:getYScroll()+self.parent.zoneList.y+y+3)
         self.parent.removeZoneButton:setVisible(true)
     end
 
-    self:drawRectBorder(0, (y), self:getWidth(), itemHeight - 1, a, self.borderColor.r, self.borderColor.g, self.borderColor.b)
+    self:drawRectBorder(0, (y), self:getWidth(), (itemHeight-1), a, self.borderColor.r, self.borderColor.g, self.borderColor.b)
 
     self:drawText( item.text, 10, y + 2, 1, 1, 1, a, self.font)
     return y + itemHeight

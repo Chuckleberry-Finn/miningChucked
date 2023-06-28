@@ -24,8 +24,8 @@ end
 function ISIndesctructibleBuild:removeFromGround(square)
     for i = 0, square:getSpecialObjects():size() do
         local thump = square:getSpecialObjects():get(i)
-        if instanceof(thump, "IsoThumpable") then square:transmitRemoveItemFromSquare(thump)
-        end
+        --if instanceof(thump, "IsoThumpable") then square:transmitRemoveItemFromSquare(thump)
+        --end
     end
 end
 
