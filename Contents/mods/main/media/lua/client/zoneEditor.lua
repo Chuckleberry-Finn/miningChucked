@@ -99,8 +99,7 @@ function zoneEditor:onClickClose() self:close() end
 
 function zoneEditor:onClickAddZone()
     sendClientCommand("nodeManager", "addZone", {x1=0, y1=0, x2=0, y2=0, minerals={}, maxNodes=0})
-    self:populateZoneList()
-    self.zoneList.selected = #self.zoneList.items+1
+    self.refresh = 2
 end
 
 function zoneEditor:onClickRemoveZone()
@@ -131,6 +130,7 @@ end
 
 function zoneEditor:populateZoneList(selectedBackup)
     self.zoneList:clear()
+    self.refresh = 0
     self.removeZoneButton:setVisible(false)
     self.zoneEditPanel:setVisible(false)
 
@@ -358,6 +358,13 @@ function zoneEditor:prerender()
         local xPos = (zoneMapX+((scale/cellsX)*i))
         --if xPos < zoneMapX+scale then
         self:drawTextureScaledStatic(nil, xPos, zoneMapY, 1, scale, 0.1, 1, 1, 0)
+    end
+
+    if self.refresh > 0 then
+        self.refresh = self.refresh-1
+        if self.refresh <= 0 then
+            self:populateZoneList()
+        end
     end
 
     if self.zones then
