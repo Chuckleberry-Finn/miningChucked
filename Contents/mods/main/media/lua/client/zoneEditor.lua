@@ -99,7 +99,8 @@ function zoneEditor:onClickClose() self:close() end
 
 function zoneEditor:onClickAddZone()
     sendClientCommand("nodeManager", "addZone", {x1=0, y1=0, x2=0, y2=0, minerals={}, maxNodes=0})
-    self.refresh = 2
+    self:populateZoneList()
+    self.zoneList.selected = #self.zoneList.items+1
 end
 
 function zoneEditor:onClickRemoveZone()
@@ -116,41 +117,45 @@ end
 
 function zoneEditor:OnZoneListMouseDown(item)
     print("A OnZoneListMouseDown: "..tostring(item))
+    zoneEditor.instance:populateZoneEditPanel()
 end
 
 function zoneEditor:OnZoneEditPanelMouseDown(item)
     print("B OnZoneEditPanelMouseDown: "..tostring(item))
     zoneEditor.instance.zoneEditPanel.clickSelected = item
-    --zoneEditor.instance:populateZoneEditPanel()--zoneEditor.instance.zoneList.items[zoneEditor.instance.zoneList.selected].item)
+
     local backup = zoneEditor.instance.zoneList.selected
-    zoneEditor.instance:populateZoneList()
-    zoneEditor.instance.zoneList.selected = backup
+    zoneEditor.instance:populateZoneList(backup)
 end
 
 
-function zoneEditor:populateZoneList()
+function zoneEditor:populateZoneList(selectedBackup)
     self.zoneList:clear()
-    self.refresh = 0
     self.removeZoneButton:setVisible(false)
     self.zoneEditPanel:setVisible(false)
 
     self.zones = ModData.exists("miningChucked_zones") and ModData.get("miningChucked_zones") or nil
     if self.zones then
+
+        if selectedBackup then self.zoneList.selected = selectedBackup end
         for i, zone in pairs(self.zones) do
+
             local label = "damaged zone"
             if zone and zone.coordinates and zone.coordinates.x1 then
                 label = "x1:"..zone.coordinates.x1..", y1:"..zone.coordinates.y1..", x2:"..zone.coordinates.x2..", y2:"..zone.coordinates.y2
             end
             self.zoneList:addItem(label, zone)
-            self:populateZoneEditPanel(zone)
         end
+        self:populateZoneEditPanel()
     end
 end
 
 zoneEditor.ignore = {["currentNodes"]=true,["weightedMineralsList"]=true}
 
-function zoneEditor:populateZoneEditPanel(zone)
-    if self.zoneList.items[self.zoneList.selected].item == zone then
+function zoneEditor:populateZoneEditPanel()
+
+    local zone = self.zoneList.items and self.zoneList.items[self.zoneList.selected] and self.zoneList.items[self.zoneList.selected].item
+    if zone then
 
         local backup = self.zoneEditPanel.selected
         self.zoneEditPanel:clear()
@@ -178,7 +183,8 @@ function zoneEditor:populateZoneEditPanel(zone)
                     else labelValue = "   [  ]" end
                 end
 
-                self.zoneEditPanel:addItem(param..labelValue, param)
+                local option = self.zoneEditPanel:addItem(param..labelValue, param)
+                option.isTable = valueIsTable
 
                 if self.zoneEditPanel.openedSublist[param] then
                     if valueIsTable then
@@ -211,7 +217,7 @@ function zoneEditor:drawZoneEditPanel(y, item, alt)
     end
     --]]
 
-    if zoneEditor.instance.zoneEditPanel.clickSelected and zoneEditor.instance.zoneEditPanel.clickSelected == item.item then
+    if zoneEditor.instance.zoneEditPanel.clickSelected and zoneEditor.instance.zoneEditPanel.clickSelected == item.item and (not item.isTable) then
         zoneEditor.instance.editValueEntry:setY(y+zoneEditor.instance.zoneEditPanel.y)
 
         zoneEditor.instance.editValueEntry:setVisible(false)
@@ -273,7 +279,7 @@ function zoneEditor:onEnterValueEntry()
 
     zoneEditor.instance.zoneEditPanel.clickSelected = nil
     self:setVisible(false)
-    zoneEditor.instance:populateZoneEditPanel(zone)
+    zoneEditor.instance:populateZoneEditPanel()
 end
 
 
@@ -352,14 +358,6 @@ function zoneEditor:prerender()
         local xPos = (zoneMapX+((scale/cellsX)*i))
         --if xPos < zoneMapX+scale then
         self:drawTextureScaledStatic(nil, xPos, zoneMapY, 1, scale, 0.1, 1, 1, 0)
-    end
-
-    if self.refresh > 0 then
-        self.refresh = self.refresh-1
-        if self.refresh <= 0 then
-            self:populateZoneList()
-            self.zoneList.selected = #self.zones
-        end
     end
 
     if self.zones then
