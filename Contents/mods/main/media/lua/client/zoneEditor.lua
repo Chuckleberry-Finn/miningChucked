@@ -151,6 +151,7 @@ function zoneEditor:populateZoneList(selectedBackup)
 end
 
 zoneEditor.ignore = {["currentNodes"]=true,["weightedMineralsList"]=true}
+zoneEditor.addKeys = {["minerals"]=true}
 
 function zoneEditor:populateZoneEditPanel()
 
@@ -226,6 +227,9 @@ function zoneEditor:drawZoneEditPanel(y, item, alt)
         if param then
             if not zoneEditor.instance.editValueEntry:isFocused() then
                 zoneEditor.instance.editValueEntry:focus()
+                if item.childOf and zoneEditor.addKeys[item.childOf] or zoneEditor.addKeys[item.item] then
+                    param = item.item.."="..param
+                end
                 zoneEditor.instance.editValueEntry:setText(tostring(param))
             end
             zoneEditor.instance.editValueEntry:setVisible(true)
