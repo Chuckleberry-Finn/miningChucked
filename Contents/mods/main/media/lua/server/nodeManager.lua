@@ -38,12 +38,13 @@ end
 function nodeManager.init(isNewGame)
     nodeManager.zones = ModData.getOrCreate("miningChucked_zones")
 
-    ---test
+    ---test---
+    --[[
     if #nodeManager.zones < 3 then
         nodeManager.addZone(12040, 7375, 12050, 7390, { ["Coal"]=3, ["Iron"]=1 }, 10)
         nodeManager.addZone(1000, 1000, 2000, 2000, { ["Coal"]=3, ["Iron"]=1 }, 10)
         nodeManager.addZone(5000, 5000, 6000, 6000, { ["Coal"]=3, ["Iron"]=1 }, 10)
-    end
+    end--]]
 end
 
 
