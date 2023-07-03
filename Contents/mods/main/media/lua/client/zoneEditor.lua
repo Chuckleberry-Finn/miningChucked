@@ -115,12 +115,10 @@ end
 
 
 function zoneEditor:OnZoneListMouseDown(item)
-    print("A OnZoneListMouseDown: "..tostring(item))
     zoneEditor.instance:populateZoneEditPanel()
 end
 
 function zoneEditor:OnZoneEditPanelMouseDown(item)
-    print("B OnZoneEditPanelMouseDown: "..tostring(item))
     zoneEditor.instance.zoneEditPanel.clickSelected = item
 
     local backup = zoneEditor.instance.zoneList.selected
@@ -253,11 +251,9 @@ function zoneEditor:onEnterValueEntry()
     if not param then
         for zoneParam,value in pairs(zone) do
             if type(value) == "table" then
-                print(" -----checking param: "..zoneParam)
                 local foundParam = zone[zoneParam][zoneEditor.instance.zoneEditPanel.clickSelected]
                 if foundParam then
                     parentParam = zoneParam
-                    print(" ------foundParam: "..zoneParam)
                     param = foundParam
                 end
             end
@@ -265,31 +261,27 @@ function zoneEditor:onEnterValueEntry()
     end
 
     local oldType = type(param)
-    print("oldType:"..oldType)
-
     local newKey = zoneEditor.instance.zoneEditPanel.clickSelected
     local newValue = self:getText()
 
-    if newValue=="" then
-        if parentParam then
-            zone[parentParam][zoneEditor.instance.zoneEditPanel.clickSelected] = nil
-        else
-            zone[zoneEditor.instance.zoneEditPanel.clickSelected] = nil
-        end
-    end
-
     if zoneEditor.addKeys[newKey] or (parentParam and zoneEditor.addKeys[parentParam]) then
-        for k, v in string.gmatch(newValue, "(%w+)=(%w+)") do
-            newKey = k
-            newValue = v
+        if newValue=="" then
+            if parentParam then
+                zone[parentParam][zoneEditor.instance.zoneEditPanel.clickSelected] = nil
+            else
+                zone[zoneEditor.instance.zoneEditPanel.clickSelected] = nil
+            end
+        else
+            for k, v in string.gmatch(newValue, "(%w+)=(%w+)") do
+                newKey = k
+                newValue = v
+            end
         end
     end
 
     if oldType == "number" then newValue = tonumber(newValue) end
 
     if newValue and newValue~="" then
-        print(" ------newValue: "..tostring(newValue))
-
         if zoneEditor.instance.zoneEditPanel.clickSelected ~= newKey then
             if parentParam then
                 zone[parentParam][zoneEditor.instance.zoneEditPanel.clickSelected] = nil
@@ -303,8 +295,9 @@ function zoneEditor:onEnterValueEntry()
         else
             zone[newKey] = newValue
         end
-        ModData.transmit("miningChucked_zones")
     end
+
+    ModData.transmit("miningChucked_zones")
 
     zoneEditor.instance.zoneEditPanel.clickSelected = nil
     self:setVisible(false)
