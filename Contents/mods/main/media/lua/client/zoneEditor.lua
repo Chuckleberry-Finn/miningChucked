@@ -267,16 +267,41 @@ function zoneEditor:onEnterValueEntry()
     local oldType = type(param)
     print("oldType:"..oldType)
 
+    local newKey = zoneEditor.instance.zoneEditPanel.clickSelected
     local newValue = self:getText()
+
+    if newValue=="" then
+        if parentParam then
+            zone[parentParam][zoneEditor.instance.zoneEditPanel.clickSelected] = nil
+        else
+            zone[zoneEditor.instance.zoneEditPanel.clickSelected] = nil
+        end
+    end
+
+    if zoneEditor.addKeys[newKey] or (parentParam and zoneEditor.addKeys[parentParam]) then
+        for k, v in string.gmatch(newValue, "(%w+)=(%w+)") do
+            newKey = k
+            newValue = v
+        end
+    end
 
     if oldType == "number" then newValue = tonumber(newValue) end
 
     if newValue and newValue~="" then
         print(" ------newValue: "..tostring(newValue))
+
+        if zoneEditor.instance.zoneEditPanel.clickSelected ~= newKey then
+            if parentParam then
+                zone[parentParam][zoneEditor.instance.zoneEditPanel.clickSelected] = nil
+            else
+                zone[zoneEditor.instance.zoneEditPanel.clickSelected] = nil
+            end
+        end
+
         if parentParam then
-            zone[parentParam][zoneEditor.instance.zoneEditPanel.clickSelected] = newValue
+            zone[parentParam][newKey] = newValue
         else
-            zone[zoneEditor.instance.zoneEditPanel.clickSelected] = newValue
+            zone[newKey] = newValue
         end
         ModData.transmit("miningChucked_zones")
     end
