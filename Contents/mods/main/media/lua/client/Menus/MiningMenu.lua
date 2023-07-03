@@ -72,7 +72,6 @@ miningActionContextMenu.Mine = function(this, player, ore, oreData)
   ISTimedActionQueue.add(ISWalkToTimedAction:new(playerObj, adjacent))
 
   local mineOre = ISMineOre:new(playerObj, ore, 475)
-  print(oreData.menuName)
   mineOre.oreData = oreData
   ISTimedActionQueue.add(mineOre)
 
