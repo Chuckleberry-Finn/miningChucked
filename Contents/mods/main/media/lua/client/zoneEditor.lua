@@ -118,8 +118,25 @@ function zoneEditor:OnZoneListMouseDown(item)
     zoneEditor.instance:populateZoneEditPanel()
 end
 
-function zoneEditor:OnZoneEditPanelMouseDown(item)
+function zoneEditor:OnZoneEditPanelMouseDown(item, test, test2)
     zoneEditor.instance.zoneEditPanel.clickSelected = item
+
+    print("item:"..tostring(item))
+    if string.find(item,"addEntry=") then
+        print(" --pass 1")
+        local zone = zoneEditor.instance.zoneList.items[zoneEditor.instance.zoneList.selected].item
+        local param
+        for k, v in string.gmatch(item, "(%w+)=(%w+)") do param = v end
+
+        print(" ---pass 2: "..tostring(param))
+        local newKeyAndValue = zoneEditor.addKeys[param]
+        if newKeyAndValue then
+            local newKey, newValue = newKeyAndValue[1], newKeyAndValue[2]
+            print(" ----pass 3: "..tostring(newKey).." = "..tostring(newValue))
+            zone[param][newKey] = newValue
+            ModData.transmit("miningChucked_zones")
+        end
+    end
 
     local backup = zoneEditor.instance.zoneList.selected
     zoneEditor.instance:populateZoneList(backup)
@@ -149,7 +166,7 @@ function zoneEditor:populateZoneList(selectedBackup)
 end
 
 zoneEditor.ignore = {["currentNodes"]=true,["weightedMineralsList"]=true}
-zoneEditor.addKeys = {["minerals"]=true}
+zoneEditor.addKeys = {["minerals"]= {"New",1}}
 
 function zoneEditor:populateZoneEditPanel()
 
@@ -190,6 +207,11 @@ function zoneEditor:populateZoneEditPanel()
                         for key,val in pairs(value) do
                             self.zoneEditPanel.additionalSublistRows = self.zoneEditPanel.additionalSublistRows+1
                             local subOption = self.zoneEditPanel:addItem("     "..key.."="..val, key)
+                            subOption.childOf = param
+                        end
+
+                        if zoneEditor.addKeys[param] then
+                            local subOption = self.zoneEditPanel:addItem("     [Add]", "addEntry="..param)
                             subOption.childOf = param
                         end
                     end
