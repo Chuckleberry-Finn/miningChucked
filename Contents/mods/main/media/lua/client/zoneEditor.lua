@@ -120,24 +120,17 @@ end
 
 function zoneEditor:OnZoneEditPanelMouseDown(item, test, test2)
     zoneEditor.instance.zoneEditPanel.clickSelected = item
-
-    print("item:"..tostring(item))
     if string.find(item,"addEntry=") then
-        print(" --pass 1")
         local zone = zoneEditor.instance.zoneList.items[zoneEditor.instance.zoneList.selected].item
         local param
         for k, v in string.gmatch(item, "(%w+)=(%w+)") do param = v end
-
-        print(" ---pass 2: "..tostring(param))
         local newKeyAndValue = zoneEditor.addKeys[param]
         if newKeyAndValue then
             local newKey, newValue = newKeyAndValue[1], newKeyAndValue[2]
-            print(" ----pass 3: "..tostring(newKey).." = "..tostring(newValue))
             zone[param][newKey] = newValue
             ModData.transmit("miningChucked_zones")
         end
     end
-
     local backup = zoneEditor.instance.zoneList.selected
     zoneEditor.instance:populateZoneList(backup)
 end
