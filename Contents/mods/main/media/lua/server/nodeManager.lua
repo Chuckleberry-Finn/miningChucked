@@ -38,6 +38,7 @@ end
 function nodeManager.init(isNewGame)
     nodeManager.zones = ModData.getOrCreate("miningChucked_zones")
 
+    ModData.transmit("miningChucked_zones")
     ---test---
     --[[
     if #nodeManager.zones < 3 then
