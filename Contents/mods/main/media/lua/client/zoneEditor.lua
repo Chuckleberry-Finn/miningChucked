@@ -142,7 +142,7 @@ function zoneEditor:populateZoneList(selectedBackup)
     self.removeZoneButton:setVisible(false)
     self.zoneEditPanel:setVisible(false)
 
-    self.zones = ModData.exists("miningChucked_zones") and ModData.get("miningChucked_zones") or nil
+    self.zones = ModData.request("miningChucked_zones") or nil
     if self.zones then
 
         if selectedBackup then self.zoneList.selected = selectedBackup end
