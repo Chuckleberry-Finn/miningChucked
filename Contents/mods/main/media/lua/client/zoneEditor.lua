@@ -465,3 +465,21 @@ function ISDebugMenu:setupButtons()
     self:addButtonInfo("Zone Editor", function() zoneEditor.OnOpenPanel() end, "MAIN")
     ISDebugMenu_setupButtons(self)
 end
+
+require "ISUI/AdminPanel/ISAdminPanelUI"
+local ISAdminPanelUI_create = ISAdminPanelUI.create
+function ISAdminPanelUI:create()
+    ISAdminPanelUI_create(self)
+    local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
+    local btnWid = 150
+    local btnHgt = math.max(25, FONT_HGT_SMALL + 3 * 2)
+    local btnGapY = 5
+    
+    self.showZoneEditor = ISButton:new(self.showStatisticsBtn.x, self.showStatisticsBtn.y+btnHgt+btnGapY, btnWid, btnHgt, "Zone Editor", self, zoneEditor.OnOpenPanel)
+    self.showZoneEditor.internal = ""
+    self.showZoneEditor:initialise()
+    self.showZoneEditor:instantiate()
+    self.showZoneEditor.borderColor = self.buttonBorderColor
+    self:addChild(self.showZoneEditor)
+
+end
