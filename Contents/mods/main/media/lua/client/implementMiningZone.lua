@@ -1,2 +1,2 @@
 require "zoneEditor"
-zoneEditor.addZoneType("miningMod")
+zoneEditor.addZoneType("miningChucked")

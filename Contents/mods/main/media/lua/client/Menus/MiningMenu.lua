@@ -1,4 +1,4 @@
-local miningMod = require('miningMod')
+local miningChucked = require('miningChucked')
 
 local miningActionContextMenu = {}
 
@@ -17,7 +17,7 @@ miningActionContextMenu.OnFillWorldObjectContextMenu = function(player, context,
   for i, v in pairs(worldobjects) do
     local name = v:getName()
     if name then
-      for index, currentOreData in pairs(miningMod.resources) do
+      for index, currentOreData in pairs(miningChucked.resources) do
         if name == index then
           ore = v
           oreData = currentOreData

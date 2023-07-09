@@ -1,31 +1,31 @@
 if isClient() then return end
 
-local miningMod = require('miningMod')
+local miningChucked = require('miningChucked')
 
 local nodeManager = {}
 nodeManager.zones = {}
 
 function nodeManager.receiveGlobalModData(name, data)
     print("SERVER RECEIVED DATA")
-    if name == "miningMod_zones" then
-        ModData.remove("miningMod_zones")
-        ModData.add("miningMod_zones",data)
+    if name == "miningChucked_zones" then
+        ModData.remove("miningChucked_zones")
+        ModData.add("miningChucked_zones",data)
     end
 end
 Events.OnReceiveGlobalModData.Add(nodeManager.receiveGlobalModData)
 
 
 function nodeManager.addZone(x1, y1, x2, y2, minerals, maxNodes)
-    local newZone = copyTable(miningMod.Zone)
+    local newZone = copyTable(miningChucked.Zone)
     newZone.coordinates.x1, newZone.coordinates.y1, newZone.coordinates.x2, newZone.coordinates.y2, newZone.minerals, newZone.maxNodes = x1, y1, x2, y2, minerals, maxNodes
     table.insert(nodeManager.zones, newZone)
     print("ZONE ADDED: "..#(nodeManager.zones))
-    ModData.transmit("miningMod_zones")
+    ModData.transmit("miningChucked_zones")
 end
 
 
 function nodeManager.init(isNewGame)
-    nodeManager.zones = ModData.getOrCreate("miningMod_zones")
+    nodeManager.zones = ModData.getOrCreate("miningChucked_zones")
     ---test---
     --[[
     if #nodeManager.zones < 3 then
@@ -85,7 +85,7 @@ function nodeManager.spawnNode(nodeZone)
 
     local mineralSelection = ZombRand(#nodeZone.weightedMineralsList)+1
     local mineral = nodeZone.weightedMineralsList[mineralSelection]
-    local mineData = miningMod.resources[mineral]
+    local mineData = miningChucked.resources[mineral]
 
     local cell = getWorld():getCell()
     if not cell then return end

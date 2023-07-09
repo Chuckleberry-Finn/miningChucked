@@ -1,4 +1,4 @@
-local miningMod = require('miningMod')
+local miningChucked = require('miningChucked')
 
 
 ISMineOre = ISBaseTimedAction:derive("ISMineIron")
@@ -53,7 +53,7 @@ function ISMineOre:perform()
 
     local oreType = self.oreData.mineType
 
-    for _, v in pairs(miningMod.resources[oreType].lootTables) do
+    for _, v in pairs(miningChucked.resources[oreType].lootTables) do
         self:processLoot(v)
     end
 end

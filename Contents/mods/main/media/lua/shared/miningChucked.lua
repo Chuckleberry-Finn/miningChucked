@@ -1,10 +1,10 @@
-local miningMod = {}
+local miningChucked = {}
 
-miningMod.resources = {}
+miningChucked.resources = {}
 
 ---nodeZone template
 -- minerals = {}:  `["mineralID"]=chance` to appear
-miningMod.Zone = {
+miningChucked.Zone = {
     maxNodes=0,
     respawnTimer=0,
     coordinates={x1=-1, y1=-1, x2=-1, y2=-1},
@@ -13,7 +13,7 @@ miningMod.Zone = {
     weightedMineralsList = {},
 }
 
-miningMod.ignore = {["currentNodes"]=true,["weightedMineralsList"]=true}
-miningMod.addKeys = {["minerals"]= {"New",1}}
+miningChucked.ignore = {["currentNodes"]=true,["weightedMineralsList"]=true}
+miningChucked.addKeys = {["minerals"]= {"New",1}}
 
-return miningMod
+return miningChucked

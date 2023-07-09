@@ -1,7 +1,7 @@
 require "ISUI/ISPanel"
 
 --TODO: MAKE SELECTOR FOR ZONE TYPES
-local selectedZoneType = "miningMod"
+local selectedZoneType = "miningChucked"
 
 zoneEditor = ISPanel:derive("zoneEditor")
 zoneEditor.instance = nil

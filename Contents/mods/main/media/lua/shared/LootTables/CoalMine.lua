@@ -1,6 +1,6 @@
-local miningMod = require('miningMod')
+local miningChucked = require('miningChucked')
 
-miningMod.resources["Coal"] = {
+miningChucked.resources["Coal"] = {
     mineType = "Coal Mine",
     menuName = getText("ContextMenu_Coal_Mine"),
     menuAction = getText("ContextMenu_Mine_Coal"),

@@ -1,10 +1,7 @@
 module Mining
 {
 	imports
-	{
-		Base
-	}
-
+	{ Base }
 
     item MM_Coal
 	{

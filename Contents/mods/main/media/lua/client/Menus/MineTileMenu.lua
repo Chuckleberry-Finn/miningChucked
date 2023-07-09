@@ -1,4 +1,4 @@
-local miningMod = require('miningMod')
+local miningChucked = require('miningChucked')
 
 local placeNodesContextMenu = {}
 
@@ -14,7 +14,7 @@ placeNodesContextMenu.OnFillWorldObjectContextMenu = function(player, context, w
     local subMenu = ISContextMenu:getNew(context)
     context:addSubMenu(newOptionMenu, subMenu)
 
-    local mines = miningMod.resources
+    local mines = miningChucked.resources
     for i, mine in pairs(mines) do
         local menuOption = subMenu:addOption(mine.menuName, worldObjects, placeNodesContextMenu.onBuildIndesctructibleBuild, player,
             mine.mineType, mine.textures[1], mine.textures[2])

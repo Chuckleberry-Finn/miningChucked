@@ -1,6 +1,6 @@
-local miningMod = require('miningMod')
+local miningChucked = require('miningChucked')
 
-miningMod.resources["Chromium"] = {
+miningChucked.resources["Chromium"] = {
     mineType = "Chromium Mine",
     menuName = getText("ContextMenu_Chromium_Mine"),
     menuAction = getText("ContextMenu_Mine_Chromium"),
