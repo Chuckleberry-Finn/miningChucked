@@ -1,5 +1,8 @@
 require "ISUI/ISPanel"
 
+--TODO: MAKE SELECTOR FOR ZONE TYPES
+local selectedZoneType = "miningMod"
+
 zoneEditor = ISPanel:derive("zoneEditor")
 zoneEditor.instance = nil
 zoneEditor.dataListObj = {}
@@ -17,6 +20,11 @@ function zoneEditor.OnOpenPanel(obj, name)
 
     zoneEditor.instance:addToUIManager()
     zoneEditor.instance:setVisible(true)
+
+    if isClient() then
+        zoneEditor.instance.zones = ModData.request(selectedZoneType.."_zones")
+    end
+
     zoneEditor.instance:populateZoneList()
 
     return zoneEditor.instance
@@ -97,8 +105,32 @@ end
 
 function zoneEditor:onClickClose() self:close() end
 
+
+zoneEditor.ignore = {}
+zoneEditor.addKeys = {}
+zoneEditor.zoneTypes = {}
+function zoneEditor.addZoneType(fileName)
+    print("loading zone type: "..fileName)
+    local newZoneModule = require(fileName)
+    if newZoneModule.ignore then
+        for k,v in pairs(newZoneModule.ignore) do
+            zoneEditor.ignore[k] = v
+        end
+    end
+    if newZoneModule.addKeys then
+        for k,v in pairs(newZoneModule.addKeys) do
+            zoneEditor.addKeys[k] = v
+        end
+    end
+    zoneEditor.zoneTypes[fileName]=newZoneModule
+end
+
 function zoneEditor:onClickAddZone()
-    sendClientCommand("nodeManager", "addZone", {x1=0, y1=0, x2=0, y2=0, minerals={}, maxNodes=0})
+    local zoneType = zoneEditor.zoneTypes[selectedZoneType]
+    local newZone = copyTable(zoneType.Zone)
+    table.insert(self.zones, newZone)
+    print("onClickAddZone: "..#(self.zones))
+    ModData.transmit(selectedZoneType.."_zones")
     self.refresh = 2
 end
 
@@ -107,7 +139,7 @@ function zoneEditor:onClickRemoveZone()
     for i, zone in pairs(self.zones) do
         if self.zoneList.items[self.zoneList.selected].item == zone then
             self.zones[i] = nil
-            ModData.transmit("miningChucked_zones")
+            ModData.transmit(selectedZoneType.."_zones")
         end
     end
     self:populateZoneList()
@@ -128,7 +160,7 @@ function zoneEditor:OnZoneEditPanelMouseDown(item, test, test2)
         if newKeyAndValue then
             local newKey, newValue = newKeyAndValue[1], newKeyAndValue[2]
             zone[param][newKey] = newValue
-            ModData.transmit("miningChucked_zones")
+            ModData.transmit(selectedZoneType.."_zones")
         end
     end
     local backup = zoneEditor.instance.zoneList.selected
@@ -136,15 +168,23 @@ function zoneEditor:OnZoneEditPanelMouseDown(item, test, test2)
 end
 
 
+function zoneEditor.receiveGlobalModData(name, data)
+    if name == selectedZoneType.."_zones" then
+        ModData.remove(selectedZoneType.."_zones")
+        ModData.add(selectedZoneType.."_zones",data)
+    end
+end
+Events.OnReceiveGlobalModData.Add(zoneEditor.receiveGlobalModData)
+
 function zoneEditor:populateZoneList(selectedBackup)
     self.zoneList:clear()
     self.refresh = 0
     self.removeZoneButton:setVisible(false)
     self.zoneEditPanel:setVisible(false)
 
-    self.zones = ModData.request("miningChucked_zones") or nil
-    if self.zones then
+    self.zones = ModData.exists(selectedZoneType.."_zones") and ModData.get(selectedZoneType.."_zones")
 
+    if self.zones then
         if selectedBackup then self.zoneList.selected = selectedBackup end
         for i, zone in pairs(self.zones) do
 
@@ -158,8 +198,6 @@ function zoneEditor:populateZoneList(selectedBackup)
     end
 end
 
-zoneEditor.ignore = {["currentNodes"]=true,["weightedMineralsList"]=true}
-zoneEditor.addKeys = {["minerals"]= {"New",1}}
 
 function zoneEditor:populateZoneEditPanel()
 
@@ -312,7 +350,7 @@ function zoneEditor:onEnterValueEntry()
         end
     end
 
-    ModData.transmit("miningChucked_zones")
+    ModData.transmit(selectedZoneType.."_zones")
 
     zoneEditor.instance.zoneEditPanel.clickSelected = nil
     self:setVisible(false)
@@ -397,7 +435,7 @@ function zoneEditor:prerender()
         self:drawTextureScaledStatic(nil, xPos, zoneMapY, 1, scale, 0.1, 1, 1, 0)
     end
 
-    if self.refresh > 0 then
+    if self.refresh and self.refresh > 0 then
         self.refresh = self.refresh-1
         if self.refresh <= 0 then
             self:populateZoneList()
@@ -474,7 +512,7 @@ function ISAdminPanelUI:create()
     local btnWid = 150
     local btnHgt = math.max(25, FONT_HGT_SMALL + 3 * 2)
     local btnGapY = 5
-    
+
     self.showZoneEditor = ISButton:new(self.showStatisticsBtn.x, self.showStatisticsBtn.y+btnHgt+btnGapY, btnWid, btnHgt, "Zone Editor", self, zoneEditor.OnOpenPanel)
     self.showZoneEditor.internal = ""
     self.showZoneEditor:initialise()

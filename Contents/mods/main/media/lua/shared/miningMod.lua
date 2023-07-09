@@ -2,10 +2,18 @@ local miningMod = {}
 
 miningMod.resources = {}
 
-function miningMod.copyAgainst(tableA,tableB)
-    if not tableA or not tableB then return end
-    for key,value in pairs(tableB) do tableA[key] = value end
-    for key,_ in pairs(tableA) do if not tableB[key] then tableA[key] = nil end end
-end
+---nodeZone template
+-- minerals = {}:  `["mineralID"]=chance` to appear
+miningMod.Zone = {
+    maxNodes=0,
+    respawnTimer=0,
+    coordinates={x1=-1, y1=-1, x2=-1, y2=-1},
+    minerals = {},
+    currentNodes = {},-- {{x=0, y=0,}},
+    weightedMineralsList = {},
+}
+
+miningMod.ignore = {["currentNodes"]=true,["weightedMineralsList"]=true}
+miningMod.addKeys = {["minerals"]= {"New",1}}
 
 return miningMod

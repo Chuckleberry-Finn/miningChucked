@@ -1,44 +1,31 @@
+if isClient() then return end
+
 local miningMod = require('miningMod')
 
 local nodeManager = {}
-
 nodeManager.zones = {}
 
-
----nodeZone template
--- minerals = {}:  `["mineralID"]=chance` to appear
-nodeManager.nodeZone = {
-    maxNodes=0,
-    respawnTimer=0,
-    coordinates={x1=-1, y1=-1, x2=-1, y2=-1},
-    minerals = {},
-    currentNodes = {},-- {{x=0, y=0,}},
-    weightedMineralsList = {},
-}
-
-
-local function onClientCommand(_module, _command, _player, _data)
-    if _module ~= "nodeManager" then return end
-    _data = _data or {}
-    if _command == "addZone" then
-        nodeManager.addZone(_data.x1, _data.y1, _data.x2, _data.y2, _data.minerals, _data.maxNodes)
+function nodeManager.receiveGlobalModData(name, data)
+    print("SERVER RECEIVED DATA")
+    if name == "miningMod_zones" then
+        ModData.remove("miningMod_zones")
+        ModData.add("miningMod_zones",data)
     end
 end
-Events.OnClientCommand.Add(onClientCommand)--/client/ to server
+Events.OnReceiveGlobalModData.Add(nodeManager.receiveGlobalModData)
 
 
 function nodeManager.addZone(x1, y1, x2, y2, minerals, maxNodes)
-    local newZone = copyTable(nodeManager.nodeZone)
+    local newZone = copyTable(miningMod.Zone)
     newZone.coordinates.x1, newZone.coordinates.y1, newZone.coordinates.x2, newZone.coordinates.y2, newZone.minerals, newZone.maxNodes = x1, y1, x2, y2, minerals, maxNodes
     table.insert(nodeManager.zones, newZone)
-    ModData.transmit("miningChucked_zones")
+    print("ZONE ADDED: "..#(nodeManager.zones))
+    ModData.transmit("miningMod_zones")
 end
 
 
 function nodeManager.init(isNewGame)
-    nodeManager.zones = ModData.getOrCreate("miningChucked_zones")
-
-    ModData.transmit("miningChucked_zones")
+    nodeManager.zones = ModData.getOrCreate("miningMod_zones")
     ---test---
     --[[
     if #nodeManager.zones < 3 then

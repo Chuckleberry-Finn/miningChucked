@@ -1,12 +1,7 @@
 local nodeManager = require "nodeManager"
-
-Events.OnInitGlobalModData.Add(nodeManager.init)
-
--- OnTick
--- EveryOneMinute
--- EveryTenMinutes
--- EveryDays
--- EveryHours
-
-Events.EveryTenMinutes.Add(nodeManager.cycle)
+if nodeManager then
+    Events.OnInitGlobalModData.Add(nodeManager.init)
+    -- OnTick EveryOneMinute EveryTenMinutes EveryDays EveryHours
+    Events.EveryTenMinutes.Add(nodeManager.cycle)
+end
 
