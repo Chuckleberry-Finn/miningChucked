@@ -110,7 +110,6 @@ zoneEditor.ignore = {}
 zoneEditor.addKeys = {}
 zoneEditor.zoneTypes = {}
 function zoneEditor.addZoneType(fileName)
-    print("loading zone type: "..fileName)
     local newZoneModule = require(fileName)
     if newZoneModule.ignore then
         for k,v in pairs(newZoneModule.ignore) do
@@ -129,7 +128,6 @@ function zoneEditor:onClickAddZone()
     local zoneType = zoneEditor.zoneTypes[selectedZoneType]
     local newZone = copyTable(zoneType.Zone)
     table.insert(self.zones, newZone)
-    print("onClickAddZone: "..#(self.zones))
     ModData.transmit(selectedZoneType.."_zones")
     self.refresh = 2
 end

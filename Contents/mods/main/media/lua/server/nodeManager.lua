@@ -6,7 +6,6 @@ local nodeManager = {}
 nodeManager.zones = {}
 
 function nodeManager.receiveGlobalModData(name, data)
-    print("SERVER RECEIVED DATA")
     if name == "miningChucked_zones" then
         ModData.remove("miningChucked_zones")
         ModData.add("miningChucked_zones",data)
@@ -19,7 +18,6 @@ function nodeManager.addZone(x1, y1, x2, y2, minerals, maxNodes)
     local newZone = copyTable(miningChucked.Zone)
     newZone.coordinates.x1, newZone.coordinates.y1, newZone.coordinates.x2, newZone.coordinates.y2, newZone.minerals, newZone.maxNodes = x1, y1, x2, y2, minerals, maxNodes
     table.insert(nodeManager.zones, newZone)
-    print("ZONE ADDED: "..#(nodeManager.zones))
     ModData.transmit("miningChucked_zones")
 end
 
@@ -98,7 +96,6 @@ function nodeManager.spawnNode(nodeZone)
     sq:AddSpecialObject(node)
     node:transmitCompleteItemToServer()
 
-    if getDebug() then print("spawnNode:"..tostring(node)) end
     --getCell():setDrag(node, getPlayer():getPlayerNum())
 
     table.insert(nodeZone.currentNodes, {nodeX, nodeY} )
