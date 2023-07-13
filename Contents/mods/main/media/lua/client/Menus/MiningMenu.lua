@@ -51,7 +51,7 @@ miningActionContextMenu.TableMenuBuilder = function(context, worldobjects, playe
     showTooltop = true
     return
   end
-  local optionName = getText("ContextMenu_Mine")..getText("ContextMenu_"..oreData.mineType)
+  local optionName = getText("ContextMenu_Mine").." "..getText("ContextMenu_"..oreData.mineType)
   local menuOption = context:addOption(optionName, worldobjects, miningActionContextMenu.Mine, player, ore, oreData)
   if showTooltop then menuOption.toolTip = toolTip end
 end
