@@ -1,9 +1,7 @@
 local miningChucked = require('miningChucked')
 
-miningChucked.resources["Sulfure"] = {
-    mineType = "Sulfure Mine",
-    menuName = getText("ContextMenu_Sulfure_Mine"),
-    menuAction = getText("ContextMenu_Mine_Sulfure"),
+miningChucked.resources["Sulfur"] = {
+    mineType = "Sulfur",
     textures = { "mines_9", "mines_8" },
     lootTables = {
         {
@@ -12,7 +10,7 @@ miningChucked.resources["Sulfure"] = {
             fixedAmount = 1,
         },
         {
-            item = "Mining.MM_RawSulfure",
+            item = "Mining.MM_RawSulfur",
             requireLevel = true,
             amountPerLevel = {
                 { levels = { 0, 1 }, amounts = { min = 0, max = 1 } },

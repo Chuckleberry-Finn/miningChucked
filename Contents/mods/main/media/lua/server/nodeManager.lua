@@ -72,7 +72,7 @@ end
 
 function nodeManager.spawnNode(nodeZone)
     --spawnNode
-
+    print("SPAWNING NODE")
     local x1, y1, x2, y2 = nodeZone.coordinates.x1, nodeZone.coordinates.y1, nodeZone.coordinates.x2, nodeZone.coordinates.y2
 
     local nodeX = ZombRand(x1,x2+1)
@@ -91,7 +91,9 @@ function nodeManager.spawnNode(nodeZone)
     local sq = cell:getGridSquare(nodeX, nodeY, 0)
     if not sq then return end
 
+    ---@type IsoThumpable|IsoObject
     local node = IsoThumpable.new(cell, sq, mineData.textures[ZombRand(2)+1], false, nil)
+    node:setName(mineral)
     node:setIsThumpable(false)
     sq:AddSpecialObject(node)
     node:transmitCompleteItemToServer()

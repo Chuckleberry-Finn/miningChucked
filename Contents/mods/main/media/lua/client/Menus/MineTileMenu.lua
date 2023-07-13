@@ -16,9 +16,10 @@ placeNodesContextMenu.OnFillWorldObjectContextMenu = function(player, context, w
 
     local mines = miningChucked.resources
     for i, mine in pairs(mines) do
-        local menuOption = subMenu:addOption(mine.menuName, worldObjects, placeNodesContextMenu.onBuildIndesctructibleBuild, player,
+        local optionName = getText("ContextMenu_"..mine.mineType)..getText("ContextMenu_Vein")
+        local menuOption = subMenu:addOption(optionName, worldObjects, placeNodesContextMenu.onBuildIndesctructibleBuild, player,
             mine.mineType, mine.textures[1], mine.textures[2])
-        placeNodesContextMenu.AddTooltip(menuOption, player, mine.menuName, mine.textures[2])
+        placeNodesContextMenu.AddTooltip(menuOption, player, optionName, mine.textures[2])
     end
 end
 

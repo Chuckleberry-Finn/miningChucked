@@ -85,13 +85,13 @@ module Mining
 		WorldStaticModel = Stone,
 	}
 
-	item MM_RawSulfure
+	item MM_RawSulfur
 	{
 	    DisplayCategory = Ingots,
 		Weight	=	1,
 		Type	=	Normal,
-		DisplayName	= Raw Sulfure,
-		Icon	=	Raw_Sulfure,
+		DisplayName	= Raw Sulfur,
+		Icon	=	Raw_Sulfur,
 		WorldStaticModel = Stone,
 	}
 
@@ -170,12 +170,12 @@ module Mining
 		Icon	=	Salt,
 	}
 
-	item MM_Sulfure
+	item MM_Sulfur
 	{
 	    DisplayCategory = Ingots,
 		Weight	=	1,
 		Type	=	Normal,
-		DisplayName	= Sulfure,
-		Icon	=	Sulfure,
+		DisplayName	= Sulfur,
+		Icon	=	Sulfur,
 	}
 }

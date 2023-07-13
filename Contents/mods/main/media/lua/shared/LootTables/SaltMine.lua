@@ -1,9 +1,7 @@
 local miningChucked = require('miningChucked')
 
 miningChucked.resources["Salt"] = {
-    mineType = "Salt Mine",
-    menuName = getText("ContextMenu_Salt_Mine"),
-    menuAction = getText("ContextMenu_Mine_Salt"),
+    mineType = "Salt",
     textures = { "mines_15", "mines_14" },
     lootTables = {
         {

@@ -1,9 +1,7 @@
 local miningChucked = require('miningChucked')
 
 miningChucked.resources["Coal"] = {
-    mineType = "Coal Mine",
-    menuName = getText("ContextMenu_Coal_Mine"),
-    menuAction = getText("ContextMenu_Mine_Coal"),
+    mineType = "Coal",
     textures = { "mines_19", "mines_18" },
     lootTables = {
         {

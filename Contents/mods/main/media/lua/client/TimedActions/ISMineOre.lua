@@ -52,9 +52,10 @@ function ISMineOre:perform()
     self.character:getStats():setEndurance(self.character:getStats():getEndurance() - 0.15)
 
     local oreType = self.oreData.mineType
-
-    for _, v in pairs(miningChucked.resources[oreType].lootTables) do
-        self:processLoot(v)
+    if miningChucked.resources[oreType] then
+        for _, v in pairs(miningChucked.resources[oreType].lootTables) do
+            self:processLoot(v)
+        end
     end
 end
 

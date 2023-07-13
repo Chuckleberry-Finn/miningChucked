@@ -51,14 +51,8 @@ miningActionContextMenu.TableMenuBuilder = function(context, worldobjects, playe
     showTooltop = true
     return
   end
-
-  if playerObj:getPerkLevel(Perks.MineEndurance) < 2 then
-    toolTip.description = toolTip.description .. '<LINE> <RGB:1,0,0>' .. getText("Tooltip_Require_Endurance") .. ' <LINE>' playerObj:Say(getText("Tooltip_Require_Endurance"))
-    showTooltop = true
-    return
-  end
-
-  local menuOption = context:addOption(oreData.menuAction, worldobjects, miningActionContextMenu.Mine, player, ore, oreData)
+  local optionName = getText("ContextMenu_Mine")..getText("ContextMenu_"..oreData.mineType)
+  local menuOption = context:addOption(optionName, worldobjects, miningActionContextMenu.Mine, player, ore, oreData)
   if showTooltop then menuOption.toolTip = toolTip end
 end
 
