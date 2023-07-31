@@ -85,6 +85,11 @@ function nodeManager.spawnNode(nodeZone)
     local mineral = nodeZone.weightedMineralsList[mineralSelection]
     local mineData = miningChucked.resources[mineral]
 
+    if not mineData then
+        print("ERROR: mineral:"..mineral.." is not valid.")
+        return
+    end
+
     local cell = getWorld():getCell()
     if not cell then return end
 
