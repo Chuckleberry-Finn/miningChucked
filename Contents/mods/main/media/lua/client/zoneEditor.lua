@@ -107,18 +107,12 @@ function zoneEditor:onClickClose() self:close() end
 
 
 zoneEditor.ignore = {}
-zoneEditor.addKeys = {}
 zoneEditor.zoneTypes = {}
 function zoneEditor.addZoneType(fileName)
     local newZoneModule = require(fileName)
     if newZoneModule.ignore then
         for k,v in pairs(newZoneModule.ignore) do
             zoneEditor.ignore[k] = v
-        end
-    end
-    if newZoneModule.addKeys then
-        for k,v in pairs(newZoneModule.addKeys) do
-            zoneEditor.addKeys[k] = v
         end
     end
     zoneEditor.zoneTypes[fileName]=newZoneModule
@@ -150,17 +144,6 @@ end
 
 function zoneEditor:OnZoneEditPanelMouseDown(item, test, test2)
     zoneEditor.instance.zoneEditPanel.clickSelected = item
-    if string.find(item,"addEntry=") then
-        local zone = zoneEditor.instance.zoneList.items[zoneEditor.instance.zoneList.selected].item
-        local param
-        for k, v in string.gmatch(item, "(%w+)=(%w+)") do param = v end
-        local newKeyAndValue = zoneEditor.addKeys[param]
-        if newKeyAndValue then
-            local newKey, newValue = newKeyAndValue[1], newKeyAndValue[2]
-            zone[param][newKey] = newValue
-            ModData.transmit(selectedZoneType.."_zones")
-        end
-    end
     local backup = zoneEditor.instance.zoneList.selected
     zoneEditor.instance:populateZoneList(backup)
 end
@@ -238,11 +221,6 @@ function zoneEditor:populateZoneEditPanel()
                             local subOption = self.zoneEditPanel:addItem("     "..key.."="..val, key)
                             subOption.childOf = param
                         end
-
-                        if zoneEditor.addKeys[param] then
-                            local subOption = self.zoneEditPanel:addItem("     [Add]", "addEntry="..param)
-                            subOption.childOf = param
-                        end
                     end
                 end
             end
@@ -276,9 +254,6 @@ function zoneEditor:drawZoneEditPanel(y, item, alt)
         if param then
             if not zoneEditor.instance.editValueEntry:isFocused() then
                 zoneEditor.instance.editValueEntry:focus()
-                if item.childOf and zoneEditor.addKeys[item.childOf] or zoneEditor.addKeys[item.item] then
-                    param = item.item.."="..param
-                end
                 zoneEditor.instance.editValueEntry:setText(tostring(param))
             end
             zoneEditor.instance.editValueEntry:setVisible(true)
@@ -314,21 +289,6 @@ function zoneEditor:onEnterValueEntry()
     local oldType = type(param)
     local newKey = zoneEditor.instance.zoneEditPanel.clickSelected
     local newValue = self:getText()
-
-    if zoneEditor.addKeys[newKey] or (parentParam and zoneEditor.addKeys[parentParam]) then
-        if newValue=="" then
-            if parentParam then
-                zone[parentParam][zoneEditor.instance.zoneEditPanel.clickSelected] = nil
-            else
-                zone[zoneEditor.instance.zoneEditPanel.clickSelected] = nil
-            end
-        else
-            for k, v in string.gmatch(newValue, "(%w+)=(%w+)") do
-                newKey = k
-                newValue = v
-            end
-        end
-    end
 
     if oldType == "number" then newValue = tonumber(newValue) end
 

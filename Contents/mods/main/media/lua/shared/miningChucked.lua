@@ -14,6 +14,5 @@ miningChucked.Zone = {
 }
 
 miningChucked.ignore = {["currentNodes"]=true,["weightedMineralsList"]=true}
-miningChucked.addKeys = {["minerals"]= {"New",1}}
 
 return miningChucked
