@@ -163,7 +163,7 @@ function zoneEditor:populateZoneList(selectedBackup)
     self.removeZoneButton:setVisible(false)
     self.zoneEditPanel:setVisible(false)
 
-    self.zones = ModData.exists(selectedZoneType.."_zones") and ModData.get(selectedZoneType.."_zones")
+    self.zones = ModData.getOrCreate(selectedZoneType.."_zones")
 
     if self.zones then
         if selectedBackup then self.zoneList.selected = selectedBackup end
