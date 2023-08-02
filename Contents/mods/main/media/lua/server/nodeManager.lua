@@ -72,7 +72,6 @@ end
 
 function nodeManager.spawnNode(nodeZone)
     --spawnNode
-    print("SPAWNING NODE")
     local x1, y1, x2, y2 = nodeZone.coordinates.x1, nodeZone.coordinates.y1, nodeZone.coordinates.x2, nodeZone.coordinates.y2
 
     local nodeX = ZombRand(x1,x2+1)
@@ -104,18 +103,22 @@ function nodeManager.spawnNode(nodeZone)
     node:transmitCompleteItemToServer()
 
     --getCell():setDrag(node, getPlayer():getPlayerNum())
-
+    
     table.insert(nodeZone.currentNodes, {nodeX, nodeY} )
+    print(" -- SPAWNING NODE: "..nodeX..", "..nodeY.."  ("..mineral..")")
 end
 
 
 function nodeManager.cycle()
+    local zoneCount = 0
     for i,zone in pairs(nodeManager.zones) do
+        zoneCount = zoneCount+1
         nodeManager.scanValidNodes(zone)
         if #zone.currentNodes < zone.maxNodes then
             nodeManager.spawnNode(zone)
         end
     end
+    print("nodeManager.cycle: # of zones: "..zoneCount)
 end
 
 
