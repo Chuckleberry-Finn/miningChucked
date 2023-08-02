@@ -15,4 +15,12 @@ miningChucked.Zone = {
 
 miningChucked.ignore = {["currentNodes"]=true,["weightedMineralsList"]=true}
 
+function miningChucked.setMinerals()
+    print("populating minerals to default zone")
+    for mineralType, mineralData in pairs(miningChucked.resources) do
+        print(" --"..mineralType)
+        miningChucked.Zone.minerals[mineralType] = 0
+    end
+end
+
 return miningChucked
