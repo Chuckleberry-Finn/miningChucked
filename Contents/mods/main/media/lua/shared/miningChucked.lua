@@ -7,13 +7,14 @@ miningChucked.resources = {}
 miningChucked.Zone = {
     maxNodes=0,
     respawnTimer=0,
+    currentTimer=0,
     coordinates={x1=-1, y1=-1, x2=-1, y2=-1},
     minerals = {},
     currentNodes = {},-- {{x=0, y=0,}},
     weightedMineralsList = {},
 }
 
-miningChucked.ignore = {["currentNodes"]=true,["weightedMineralsList"]=true}
+miningChucked.ignore = {["currentNodes"]=true,["weightedMineralsList"]=true,["currentTimer"]=true}
 
 function miningChucked.setMinerals()
     print("populating minerals to default zone")

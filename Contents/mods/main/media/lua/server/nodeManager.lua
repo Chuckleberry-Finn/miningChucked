@@ -113,10 +113,14 @@ function nodeManager.cycle()
     local zoneCount = 0
     for i,zone in pairs(nodeManager.zones) do
         zoneCount = zoneCount+1
-        nodeManager.scanValidNodes(zone)
-        if #zone.currentNodes < zone.maxNodes then
-            nodeManager.spawnNode(zone)
-        end
+        --zone.currentTimer = (zone.currentTimer or zone.respawnTimer) - 1
+        --if zone.currentTimer <= 0 then
+            --zone.currentTimer = zone.respawnTimer
+            nodeManager.scanValidNodes(zone)
+            if #zone.currentNodes < zone.maxNodes then
+                nodeManager.spawnNode(zone)
+            end
+        --end
     end
     print("nodeManager.cycle: # of zones: "..zoneCount)
 end
