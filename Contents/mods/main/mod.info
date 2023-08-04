@@ -3,6 +3,7 @@ name=Mining Chucked
 description=Adds a mining skill. Commissioned by Atomic Duck.
 description=Continuation to TheHunterJP's Mining Mod.
 poster=poster.png
+require=TargetSquareOnLoad
 tags=Build 41
 versionMin=41.0
 pack=mines

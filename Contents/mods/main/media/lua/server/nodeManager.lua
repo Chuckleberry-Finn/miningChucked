@@ -2,6 +2,8 @@ if isClient() then return end
 
 local miningChucked = require('miningChucked')
 
+local targetSquareOnLoad = require "!_TargetSquare_OnLoad"
+
 local nodeManager = {}
 nodeManager.zones = {}
 
@@ -70,8 +72,46 @@ function nodeManager.scanValidNodes(nodeZone)
 end
 
 
-function nodeManager.spawnNode(nodeZone)
-    --spawnNode
+
+function nodeManager.spawnNode(square, zoneID, sprite, mineral)
+
+    if not square then print("ERROR: nodeManager.spawnNode: no square reached, aborting node spawn.") end
+    local cell = square:getCell()
+
+    ---@type IsoThumpable|IsoObject
+    local node = IsoThumpable.new(cell, square, sprite, false, nil)
+    node:setName(mineral)
+    node:setIsThumpable(false)
+    square:AddSpecialObject(node)
+    node:transmitCompleteItemToServer()
+
+    local nodeZone
+    for i,zone in pairs(nodeManager.zones) do
+        if zone and zone.ID and zone.ID == zoneID then
+            nodeZone = zone
+        end
+    end
+
+    local nodeX, nodeY = square:getX(), square:getY()
+
+    if nodeZone then
+        table.insert(nodeZone.currentNodes, {nodeX, nodeY} )
+        print(" -- SPAWNING NODE: "..nodeX..", "..nodeY.."  ("..mineral..")")
+    else
+        print("ERROR: spawnNode: zone is not found, unable to spawn node")
+    end
+end
+
+
+function nodeManager.addCommand()
+    targetSquareOnLoad.instance.OnLoadCommands.spawnNode = function(square, myCommand)
+        nodeManager.spawnNode(square, myCommand.zoneID, myCommand.sprite, myCommand.mineral)
+    end
+end
+Events.OnSGlobalObjectSystemInit.Add(nodeManager.addCommand)
+
+
+function nodeManager.tryToSpawnNode(nodeZone)
     local x1, y1, x2, y2 = nodeZone.coordinates.x1, nodeZone.coordinates.y1, nodeZone.coordinates.x2, nodeZone.coordinates.y2
 
     local nodeX = ZombRand(x1,x2+1)
@@ -84,47 +124,41 @@ function nodeManager.spawnNode(nodeZone)
     local mineral = nodeZone.weightedMineralsList[mineralSelection]
     local mineData = miningChucked.resources[mineral]
 
-    if not mineData then
-        print("ERROR: mineral:"..mineral.." is not valid.")
+    if not mineData then print("ERROR: mineral:"..mineral.." is not valid, unable to spawn node") return end
+
+    local sprite = mineData.textures[ZombRand(2)+1]
+
+    if not nodeZone.ID then nodeZone.ID = getRandomUUID() end
+    local zoneID = nodeZone.ID
+
+    local sq = getSquare(nodeX, nodeY, 0)
+    if not sq then
+        print(" -- targetSquareOnLoad: no square reached, storing spawn event.")
+        targetSquareOnLoad.instance.addCommand(nodeX, nodeY, 0, { command="spawnNode", zoneID=zoneID, sprite=sprite, mineral=mineral })
         return
     end
 
-    local cell = getWorld():getCell()
-    if not cell then return end
-
-    local sq = cell:getGridSquare(nodeX, nodeY, 0)
-    if not sq then return end
-
-    ---@type IsoThumpable|IsoObject
-    local node = IsoThumpable.new(cell, sq, mineData.textures[ZombRand(2)+1], false, nil)
-    node:setName(mineral)
-    node:setIsThumpable(false)
-    sq:AddSpecialObject(node)
-    node:transmitCompleteItemToServer()
-
-    --getCell():setDrag(node, getPlayer():getPlayerNum())
-    
-    table.insert(nodeZone.currentNodes, {nodeX, nodeY} )
-    print(" -- SPAWNING NODE: "..nodeX..", "..nodeY.."  ("..mineral..")")
+    nodeManager.spawnNode(sq, zoneID, sprite, mineral)
 end
 
 
 function nodeManager.cycle()
-    local zoneCount = 0
+    local zoneCount, spawning = 0, 0
     for i,zone in pairs(nodeManager.zones) do
         zoneCount = zoneCount+1
-        --zone.currentTimer = (zone.currentTimer or zone.respawnTimer) - 1
-        --if zone.currentTimer <= 0 then
-            --zone.currentTimer = zone.respawnTimer
+        zone.currentTimer = (zone.currentTimer or zone.respawnTimer) - 1
+        if zone.currentTimer <= 0 then
+            zone.currentTimer = zone.respawnTimer
             nodeManager.scanValidNodes(zone)
             if #zone.currentNodes < zone.maxNodes then
-                nodeManager.spawnNode(zone)
+                spawning = spawning+1
+                nodeManager.tryToSpawnNode(zone)
             end
-        --end
+        end
     end
-    print("nodeManager.cycle: # of zones: "..zoneCount)
+
+    if spawning>0 then print("nodeManager.cycle: "..spawning.."/"..zoneCount.." spawning nodes.") end
 end
 
 
 return nodeManager
-
