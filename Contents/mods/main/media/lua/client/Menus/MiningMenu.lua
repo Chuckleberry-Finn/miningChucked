@@ -71,9 +71,6 @@ miningActionContextMenu.Mine = function(this, player, ore, oreData)
   mineOre.oreData = oreData
   ISTimedActionQueue.add(mineOre)
 
-  local pickaxe = playerObj:getInventory():getFirstTagEvalRecurse("Pickaxe", predicateNotBroken)
-  if not pickaxe then return end
-  ISWorldObjectContextMenu.equip(playerObj, playerObj:getPrimaryHandItem(), pickaxe, true, true)
 end
 
 
