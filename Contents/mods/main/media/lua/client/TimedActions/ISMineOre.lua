@@ -15,7 +15,7 @@ end
 
 
 function ISMineOre:waitToStart()
-    self.character:faceThisObjectAlt(self.item)
+    self.character:faceThisObjectAlt(self.node)
     return self.character:shouldBeTurning()
 end
 
@@ -28,7 +28,7 @@ end
 
 
 function ISMineOre:update()
-    self.character:faceThisObjectAlt(self.item)
+    self.character:faceThisObjectAlt(self.node)
 end
 
 
@@ -59,12 +59,13 @@ function ISMineOre:perform()
     end
 end
 
-function ISMineOre:new(character, item, time)
+
+function ISMineOre:new(character, node, time)
     local o = {}
     setmetatable(o, self)
     self.__index = self
     o.character = character
-    o.item = item
+    o.node = node
     o.stopOnWalk = true
     o.stopOnRun = true
     o.maxTime = time - (character:getPerkLevel(Perks.Strength) * 10)
@@ -86,9 +87,31 @@ function ISMineOre:processLoot(loot)
         for _, v in pairs(loot.amountPerLevel) do
             for _, level in pairs(v.levels) do
                 if miningLevel == level then
-                    local extra = ZombRand(v.amounts.max - v.amounts.min + 1)
-                    local finalAmount = v.amounts.min + extra
-                    self:addItems(loot.item, finalAmount)
+
+                    self.character:getXp():AddXP(Perks.Mining, 2.5)
+
+                    ---@type IsoThumpable|IsoObject
+                    local node = self.node
+                    local nodeModData = node:getModData()
+                    nodeModData.miningChucked = nodeModData.miningChucked or {}
+                    nodeModData.miningChucked.oreLeft = nodeModData.miningChucked.oreLeft or 3
+
+                    if nodeModData.miningChucked.oreLeft > 0 then
+
+                        local extra = ZombRand(v.amounts.max - v.amounts.min + 1)
+                        local finalAmount = v.amounts.min + extra
+                        finalAmount = math.min(finalAmount, nodeModData.miningChucked.oreLeft)
+                        nodeModData.miningChucked.oreLeft = nodeModData.miningChucked.oreLeft-finalAmount
+                        self:addItems(loot.item, finalAmount)
+                    end
+
+                    if nodeModData.miningChucked.oreLeft > 0 then
+                        node:transmitModData()
+                    else
+                        node:getSquare():transmitRemoveItemFromSquare(node)
+                        node:getSquare():RemoveTileObject(node)
+                    end
+
                     return
                 end
             end
