@@ -1,5 +1,5 @@
 version=1
-id=2987857283
+id=3020684845
 title=Mining Chucked
 description=[h2]Adds a mining skill.[/h2]
 description=[h3]Original code written by [b]TheHunterJP[/b].[/h3]
@@ -12,4 +12,4 @@ description=
 description=
 description=[h3]Copyright 2023 Chuckleberry Finn. This item is not authorized for posting on Steam, except under the Steam account named Chuckleberry Finn.[/h3]
 tags=Build 41
-visibility=unlisted
+visibility=public
