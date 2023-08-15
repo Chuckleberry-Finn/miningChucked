@@ -75,7 +75,7 @@ end
 
 function nodeManager.spawnNode(square, zoneID, sprite, mineral)
 
-    if not square then print("ERROR: nodeManager.spawnNode: no square reached, aborting node spawn.") end
+    if not square then print("ERROR: miningChucked: nodeManager.spawnNode: no square reached, aborting node spawn.") end
     local cell = square:getCell()
 
     ---@type IsoThumpable|IsoObject
@@ -96,9 +96,9 @@ function nodeManager.spawnNode(square, zoneID, sprite, mineral)
 
     if nodeZone then
         table.insert(nodeZone.currentNodes, {nodeX, nodeY} )
-        print(" -- SPAWNING NODE: "..nodeX..", "..nodeY.."  ("..mineral..")")
+        print(" -- miningChucked: SPAWNING NODE: "..nodeX..", "..nodeY.."  ("..mineral..")")
     else
-        print("ERROR: spawnNode: zone is not found, unable to spawn node")
+        print("ERROR: miningChucked: spawnNode: zone is not found, unable to spawn node")
     end
 end
 
@@ -133,7 +133,7 @@ function nodeManager.tryToSpawnNode(nodeZone)
 
     local sq = getSquare(nodeX, nodeY, 0)
     if not sq then
-        print(" -- targetSquareOnLoad: no square reached, storing spawn event.")
+        print(" -- miningChucked: targetSquareOnLoad: no square reached, storing spawn event.")
         targetSquareOnLoad.instance.addCommand(nodeX, nodeY, 0, { command="spawnNode", zoneID=zoneID, sprite=sprite, mineral=mineral })
         return
     end
@@ -157,7 +157,7 @@ function nodeManager.cycle()
         end
     end
 
-    if spawning>0 then print("nodeManager.cycle: "..spawning.."/"..zoneCount.." spawning nodes.") end
+    if getDebug() and spawning>0 then print("miningChucked: nodeManager.cycle: "..spawning.."/"..zoneCount.." spawning nodes.") end
 end
 
 
