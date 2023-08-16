@@ -1,7 +1,7 @@
 version=1
 id=3020684845
 title=Mining Chucked
-description=[h2]Adds a mining skill.[/h2]
+description=[h2]Adds a mining skill as well as a Zone-Editor to add zones which spawn nodes/ore veins.[/h2]
 description=[h3]Original code written by [b]TheHunterJP[/b].[/h3]
 description=[h3]Commissioned by [b]MrAtomicDuck[/b].[/h3]
 description=
