@@ -21,6 +21,11 @@ end
 
 
 function ISMineOre:start()
+    local node = self.node
+    if not node then return end
+    local nodeModData = node:getModData()
+    if nodeModData.miningChucked.oreLeft <= 0 then return end
+
     self:setActionAnim("Mining")
     self.character:faceThisObject(self.thumpable)
     self.sound = self.character:playSound("Mining_Pickaxe")
@@ -42,6 +47,11 @@ end
 
 
 function ISMineOre:perform()
+    local node = self.node
+    if not node then return end
+    local nodeModData = node:getModData()
+    if nodeModData.miningChucked.oreLeft <= 0 then return end
+
     if self.sound then
         self.character:getEmitter():stopSound(self.sound)
         self.sound = nil
