@@ -7,14 +7,6 @@ local targetSquareOnLoad = require "!_TargetSquare_OnLoad"
 local nodeManager = {}
 nodeManager.zones = {}
 
-function nodeManager.receiveGlobalModData(name, data)
-    if name == "miningChucked_zones" then
-        ModData.remove("miningChucked_zones")
-        ModData.add("miningChucked_zones",data)
-    end
-end
-Events.OnReceiveGlobalModData.Add(nodeManager.receiveGlobalModData)
-
 
 function nodeManager.addZone(x1, y1, x2, y2, minerals, maxNodes)
     local newZone = copyTable(miningChucked.Zone)
