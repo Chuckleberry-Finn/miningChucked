@@ -167,7 +167,7 @@ module Mining
 		Weight	=	1,
 		Type	=	Normal,
 		DisplayName	= Salt,
-		Icon	=	Salt,
+		Icon	=	SaltPile,
 	}
 
 	item MM_Sulfur
